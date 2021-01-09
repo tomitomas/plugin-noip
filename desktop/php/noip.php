@@ -76,7 +76,7 @@ foreach ($eqLogics as $eqLogic) {
             <div class="panel-body">
                 <div class="eqLogicThumbnailContainer  second">
                     <?php
-                    if($has['repo']) {
+                    if($has['domain']) {
                 foreach ($eqLogics as $eqLogic) {
                             if($eqLogic->getConfiguration('type','') != 'domain') {
                                 continue;
