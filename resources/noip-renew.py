@@ -70,7 +70,7 @@ class Robot:
         self.logger.log("Opening {LOGIN_URL}...".format(LOGIN_URL=Robot.LOGIN_URL))
         self.browser.get(Robot.LOGIN_URL)
         if self.debug > 1:
-            self.browser.save_screenshot("debug1.png")
+            self.browser.save_screenshot("/var/www/html/plugins/noip/data/debug1.png")
 
         self.logger.log("Logging in...")
         ele_usr = self.browser.find_element_by_name("username")
@@ -81,7 +81,7 @@ class Robot:
         self.browser.find_element_by_name("Login").click()
         if self.debug > 1:
             time.sleep(1)
-            self.browser.save_screenshot("debug2.png")
+            self.browser.save_screenshot("/var/www/html/plugins/noip/data/debug2.png")
 
     def update_hosts(self):
         count = 0
@@ -104,7 +104,7 @@ class Robot:
                 renewed = True
             iteration += 1
             self.data.append({'hostname':host_name, 'expirationdays':expiration_days, 'renewed':renewed})
-        self.browser.save_screenshot("results.png")
+        self.browser.save_screenshot("/var/www/html/plugins/noip/data/results.png")
         self.logger.log("Confirmed hosts: {count}".format(count=str(count)))
         return True
 
@@ -113,7 +113,7 @@ class Robot:
         try:
             self.browser.get(Robot.HOST_URL)
         except TimeoutException as e:
-            self.browser.save_screenshot("timeout.png")
+            self.browser.save_screenshot("/var/www/html/plugins/noip/data/timeout.png")
             self.logger.log("Timeout: {e}".format(e=str(e),expiration_days=expiration_days))
 
     def update_host(self, host_button, host_name):
@@ -128,6 +128,8 @@ class Robot:
             pass
 
         if intervention:
+            if self.debug > 1:
+                self.browser.save_screenshot("/var/www/html/plugins/noip/data/intervention.png")
             raise Exception("Manual intervention required. Upgrade text detected.")
 
         self.browser.save_screenshot("{host_name}_success.png".format(host_name=host_name))
@@ -157,6 +159,8 @@ class Robot:
         host_tds = self.browser.find_elements_by_xpath("//td[@data-title=\"Host\"]")
         if len(host_tds) == 0:
             raise Exception("No hosts or host table rows not found")
+        if self.debug > 1:
+            self.browser.save_screenshot("/var/www/html/plugins/noip/data/debug3.png")
         return host_tds
 
     def run(self):
@@ -168,7 +172,7 @@ class Robot:
                 rc = 3
         except Exception as e:
             self.logger.log(str(e))
-            self.browser.save_screenshot("exception.png")
+            self.browser.save_screenshot("/var/www/html/plugins/noip/data/exception.png")
             rc = 2
         finally:
             self.browser.quit()
