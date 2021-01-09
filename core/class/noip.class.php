@@ -90,7 +90,7 @@ class noip extends eqLogic {
                         ));
                     }
                 }
-                $eqLogic->refreshInfo();
+                $eqLogic->recordData($obj);
             }
         }
 	}
@@ -178,7 +178,9 @@ class noip extends eqLogic {
     
     public function executeNoIpScript($login, $password, $renew) {
         $noip_path = dirname(__FILE__) . '/../..';
-        $cmd = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' ' . $password . ' ' . config::byKey('renewThreshold','noip',7) . ' ' . $renew . ' ' . log::convertLogLevel(log::getLogLevel('noip'));
+        $debug = 0;
+        if ()
+        $cmd = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py "' . $login . '" "' . $password . '" "' . config::byKey('renewThreshold','noip',7) . '" "' . $renew . '" "2"';
 		
 		log::add(__CLASS__, 'info', 'Lancement script No-Ip : ' . $cmd);
 		exec($cmd . ' >> ' . log::getPathToLog('noip') . ' 2>&1'); 
@@ -193,9 +195,12 @@ class noip extends eqLogic {
         return $json_a;
     }
 
-	function refreshInfo($renew) {
+	public function refreshInfo($renew) {
 		$obj = $this->executeNoIpScript($this->getConfiguration('login'), $this->getConfiguration('password'), $renew);
-        
+        $this->recordData($obj);
+	}
+    
+    public function recordData($obj) {
         if (isset($obj->message)) {
             log::add(__CLASS__, 'error', $this->getHumanName() . ' users/'.$this->getConfiguration('login').'/repos:' . $obj->message);
         } 
@@ -215,7 +220,7 @@ class noip extends eqLogic {
                 }
             }
         }
-	}
+    }
 }
 
 class noipCmd extends cmd

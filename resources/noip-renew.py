@@ -22,7 +22,6 @@ import sys
 import os
 import re
 import base64
-import subprocess
 
 class Logger:
     def __init__(self, level):
@@ -178,8 +177,8 @@ class Robot:
 
 
 def main(argv=None):
-    noip_username, noip_password, noip_threshold, debug,  = get_args_values(argv)
-    return (Robot(noip_username, noip_password, noip_threshold, debug)).run()
+    noip_username, noip_password, noip_threshold, noip_renew, debug,  = get_args_values(argv)
+    return (Robot(noip_username, noip_password, noip_threshold, noip_renew, debug)).run()
 
 
 def get_args_values(argv):
