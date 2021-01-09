@@ -191,8 +191,8 @@ def get_args_values(argv):
 
     noip_username = argv[1]
     noip_password = argv[2]
-    noip_threshold = argv[3]
-    noip_renew = argv[4]
+    noip_threshold = int(argv[3])
+    noip_renew = int(argv[4])
     debug = 1
     if len(argv) > 5:
         debug = int(argv[5])
