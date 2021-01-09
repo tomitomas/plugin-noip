@@ -30,8 +30,8 @@ class Logger:
     def log(self, msg, level=None):
         self.time_string_formatter = time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(time.time()))
         self.level = self.level if level is None else level
-        #if self.level > 0:
-            #print(f"[{self.time_string_formatter}] - {msg}")
+        if self.level > 0:
+            print("[{mydate}] - {msg}".format(mydate=self.time_string_formatter,msg=msg))
 
 
 class Robot:
@@ -58,7 +58,7 @@ class Robot:
         options.add_argument("headless")
         options.add_argument("no-sandbox")  # need when run in docker
         options.add_argument("window-size=1200x800")
-        options.add_argument(f"user-agent={Robot.USER_AGENT}")
+        options.add_argument("user-agent={USER_AGENT}".format(USER_AGENT=Robot.USER_AGENT))
         if 'https_proxy' in os.environ:
             options.add_argument("proxy-server=" + os.environ['https_proxy'])
         browser = webdriver.Chrome(options=options)
@@ -66,7 +66,7 @@ class Robot:
         return browser
 
     def login(self):
-        self.logger.log(f"Opening {Robot.LOGIN_URL}...")
+        self.logger.log("Opening {LOGIN_URL}...".format(LOGIN_URL=Robot.LOGIN_URL))
         self.browser.get(Robot.LOGIN_URL)
         if self.debug > 1:
             self.browser.save_screenshot("debug1.png")
@@ -94,7 +94,7 @@ class Robot:
             host_button = self.get_host_button(host, iteration) # This is the button to confirm our free host
             host_name = host_link.text
             expiration_days = self.get_host_expiration_days(host, iteration)
-            self.logger.log(f"{host_name} expires in {str(expiration_days)} days")
+            self.logger.log("{host_name} expires in {expiration_days} days".format(host_name=host_name,expiration_days=str(expiration_days)))
             renewed = False
             if self.renew > 0 and expiration_days < self.threshold:
                 self.update_host(host_button, host_name)
@@ -103,19 +103,19 @@ class Robot:
             iteration += 1
             self.data.append({'hostname':host_name, 'expirationdays':expiration_days, 'renewed':renewed})
         self.browser.save_screenshot("results.png")
-        self.logger.log(f"Confirmed hosts: {count}", 2)
+        self.logger.log("Confirmed hosts: {count}".format(count=str(count)))
         return True
 
     def open_hosts_page(self):
-        self.logger.log(f"Opening {Robot.HOST_URL}...")
+        self.logger.log("Opening {HOST_URL}...".format(HOST_URL=Robot.HOST_URL))
         try:
             self.browser.get(Robot.HOST_URL)
         except TimeoutException as e:
             self.browser.save_screenshot("timeout.png")
-            self.logger.log(f"Timeout: {str(e)}")
+            self.logger.log("Timeout: {e}".format(e=str(e),expiration_days=expiration_days))
 
     def update_host(self, host_button, host_name):
-        self.logger.log(f"Updating {host_name}")
+        self.logger.log("Updating {host_name}".format(host_name=host_name))
         host_button.click()
         time.sleep(3)
         intervention = False
@@ -128,7 +128,7 @@ class Robot:
         if intervention:
             raise Exception("Manual intervention required. Upgrade text detected.")
 
-        self.browser.save_screenshot(f"{host_name}_success.png")
+        self.browser.save_screenshot("{host_name}_success.png".format(host_name=host_name))
 
     @staticmethod
     def get_host_expiration_days(host, iteration):
@@ -139,7 +139,7 @@ class Robot:
             pass
         regex_match = re.search("\\d+", host_remaining_days)
         if regex_match is None:
-            raise Exception("Expiration days label does not match the expected pattern in iteration: {iteration}")
+            raise Exception("Expiration days label does not match the expected pattern")
         expiration_days = int(regex_match.group(0))
         return expiration_days
 
@@ -159,7 +159,7 @@ class Robot:
 
     def run(self):
         rc = 0
-        self.logger.log(f"Debug level: {self.debug}")
+        self.logger.log("Debug level: {debug}".format(debug=str(self.debug)))
         try:
             self.login()
             if not self.update_hosts():
@@ -185,7 +185,7 @@ def get_args_values(argv):
     if argv is None:
         argv = sys.argv
     if len(argv) < 3:
-        print(f"Usage: {argv[0]} <noip_username> <noip_password> <threshold> <renew> [<debug-level>] ")
+        print("Usage: <noip_username> <noip_password> <threshold> <renew> [<debug-level>]")
         sys.exit(1)
 
     noip_username = argv[1]
