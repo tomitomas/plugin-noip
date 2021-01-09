@@ -151,6 +151,7 @@ class noip extends eqLogic {
       } else {
           $this->setDisplay('height','225px');
       }
+        
       $this->setDisplay('width', '280px');
       $this->setIsEnable(1);
       $this->setIsVisible(1);
