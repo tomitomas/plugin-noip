@@ -45,7 +45,7 @@ class noip extends eqLogic {
 		$defaultRoom = intval(config::byKey('defaultParentObject','noip','',true));
 		$name = '';
         if(self::nameExists($domain->hostname)) {
-            $name = $domain->hostname.'_'.time()
+            $name = $domain->hostname.'_'.time();
 			log::add('noip', 'debug', "Nom en double ".$domain->hostname." renommé en ".$name);
 		} else {
             $name = $domain->hostname;
