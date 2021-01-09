@@ -30,8 +30,8 @@ class Logger:
     def log(self, msg, level=None):
         self.time_string_formatter = time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(time.time()))
         self.level = self.level if level is None else level
-        if self.level > 0:
-            print(f"[{self.time_string_formatter}] - {msg}")
+        #if self.level > 0:
+            #print(f"[{self.time_string_formatter}] - {msg}")
 
 
 class Robot:
