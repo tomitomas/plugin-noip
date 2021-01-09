@@ -167,7 +167,7 @@ foreach (jeeObject::all() as $object) {
 		<div class="form-group" id="div_passNoIp">
 		 <label class="col-sm-3 control-label">{{Mot de passe No-Ip}}</label>
 		 <div class="col-sm-3">
-				 <input type="password" autocomplete="new-password" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="token" placeholder="Mot de passe No-Ip"/>
+				 <input type="password" autocomplete="new-password" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="password" placeholder="Mot de passe No-Ip"/>
 		 </div>
  </div>
 </fieldset>
