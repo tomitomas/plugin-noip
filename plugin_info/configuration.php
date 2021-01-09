@@ -41,5 +41,18 @@ if (!isConnect('admin')) {
                 </select>
 			</div>
 		</div>
+        <div class="form-group">
+		  <label class="col-lg-4 control-label" >{{Pièce par défaut pour les nouveaux domaines}}</label>
+		  <div class="col-lg-3">
+			<select id="sel_object" class="configKey form-control" data-l1key="defaultParentObject">
+			  <option value="">{{Aucune}}</option>
+			  <?php
+				foreach (jeeObject::all() as $object) {
+				  echo '<option value="' . $object->getId() . '">' . $object->getName() . '</option>';
+				}
+			  ?>
+			</select>
+		  </div>
+		</div>
 	</fieldset>
 </form>
