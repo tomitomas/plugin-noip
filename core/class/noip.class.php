@@ -178,8 +178,6 @@ class noip extends eqLogic {
     
     public function executeNoIpScript($login, $password, $renew) {
         $noip_path = dirname(__FILE__) . '/../..';
-        $debug = 0;
-        if ()
         $cmd = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py "' . $login . '" "' . $password . '" "' . config::byKey('renewThreshold','noip',7) . '" "' . $renew . '" "2"';
 		
 		log::add(__CLASS__, 'info', 'Lancement script No-Ip : ' . $cmd);
