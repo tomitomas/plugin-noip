@@ -219,6 +219,24 @@ class noip extends eqLogic {
             }
         }
     }
+    
+    public static function dependancy_install() {
+		log::remove(__CLASS__ . '_update');
+		return array('script' => dirname(__FILE__) . '/../../resources/install_apt.sh ' . jeedom::getTmpFolder(__CLASS__) . '/dependency', 'log' => log::getPathToLog(__CLASS__ . '_update'));
+	}
+    
+    public static function dependancy_info() {
+		$return = array();
+		$return['log'] = 'noip_update';
+		$return['progress_file'] = jeedom::getTmpFolder(__CLASS__) . '/dependency';
+        if (file_exists(jeedom::getTmpFolder(__CLASS__) . '/dependency')) {
+			$return['state'] = 'in_progress';
+		} else {
+            $return['state'] = 'ok';
+		}
+		return $return;
+	}
+
 }
 
 class noipCmd extends cmd
