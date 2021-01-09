@@ -16,7 +16,7 @@
 #  along with Plugin openzwave for jeedom. If not, see <http://www.gnu.org/licenses/>.
 
 #set -x  # make sure each command is printed in the terminal
-PROGRESS_FILE=/tmp/jeedom/noip/dependance
+PROGRESS_FILE=/tmp/jeedom/noip/dependency
 touch ${PROGRESS_FILE}
 echo 0 > ${PROGRESS_FILE}
 echo "Lancement de l'installation/mise à jour des dépendances no-ip"
@@ -55,7 +55,7 @@ apt_install chromium-browser python3 python3-pip
 echo 80 > ${PROGRESS_FILE}
 # Python
 echo "Installation des dependances Python"
-pip_install selenium json
+pip_install selenium
 echo 100 > ${PROGRESS_FILE}
 echo "Everything is successfully installed!"
 rm ${PROGRESS_FILE}
