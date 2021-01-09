@@ -22,6 +22,7 @@ import sys
 import os
 import re
 import base64
+import json
 
 class Logger:
     def __init__(self, level):
