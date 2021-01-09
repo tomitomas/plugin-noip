@@ -1,0 +1,51 @@
+{
+    "plugins\/github\/plugin_info\/configuration.php": {
+        "401 - Accès non autorisé": "401 - Accès non autorisé",
+        "Paramètres": "Paramètres",
+        "Récupérer les repositories privés": "Récupérer les repositories privés",
+        "Récupérer les forks": "Récupérer les forks",
+        "Pièce par défaut pour les nouveaux repositories": "Pièce par défaut pour les nouveaux repositories"
+    },
+    "plugins\/linksys\/desktop\/php\/github.php": {
+        "401 - Accès non autorisé": "401 - Accès non autorisé",
+        "Gestion": "Gestion",
+        "Ajouter": "Ajouter",
+        "Configuration": "Configuration",
+        "Scanner les repositories": "Scanner les repositories",
+        "Scanner": "Scanner",
+        "Mes Comptes Github": "Mes Comptes Github",
+        "Vous n'avez pas encore de compte Github, cliquez sur Ajouter un équipement pour commencer": "Vous n'avez pas encore de compte Github, cliquez sur Ajouter un équipement pour commencer",
+        "Mes Repositories": "Mes Repositories",
+        "Rechercher": "Rechercher",
+        "Scannez les repositories pour les créer": "Scannez les repositories pour les créer",
+        "Configuration avancée": "Configuration avancée",
+        "Equipement": "Equipement",
+        "Commandes": "Commandes",
+        "Nom de l'équipement": "Nom de l'équipement",
+        "Objet parent": "Objet parent",
+        "Aucun": "Aucun",
+        "Catégorie": "Catégorie",
+        "Activer": "Activer",
+        "Visible": "Visible",
+        "Login Github": "Login Github",
+        "Token Github": "Token Github",
+        "Id": "Id",
+        "Nom": "Nom",
+        "Type": "Type",
+        "Action": "Action",
+        "Options": "Options",
+        "Sauvegarder": "Sauvegarder",
+        "Supprimer": "Supprimer"
+    },
+    "plugins\/linksys\/desktop\/js\/linksys.js": {
+        "Min": "Min",
+        "Max": "Max",
+        "Unité": "Unité",
+        "Afficher": "Afficher",
+        "Historiser": "Historiser",
+        "Tester": "Tester",
+        "Synchronisation réussie": "Synchronisation réussie"
+    },
+    "plugins\/linksys\/core\/class\/linksys.class.php": {
+    }
+}
