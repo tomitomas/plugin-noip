@@ -53,7 +53,7 @@ class noip extends eqLogic {
 		log::add('noip', 'info', "Domaine créé : ".$name);
 		$eqLogicClient->setName($name);
 		$eqLogicClient->setIsEnable(1);
-		$eqLogicClient->setIsVisible(1);
+		$eqLogicClient->setIsVisible(0);
 		$eqLogicClient->setLogicalId($name);
 		$eqLogicClient->setEqType_name('noip');
 		if($defaultRoom) $eqLogicClient->setObject_id($defaultRoom);
@@ -162,7 +162,7 @@ class noip extends eqLogic {
 
 	public function getImage() {
 		if($this->getConfiguration('type') == 'domain'){
-			return 'plugins/noip/core/assets/repo_icon.png';
+			return 'plugins/noip/core/assets/domain_icon.png';
 		}
 		return 'plugins/noip/plugin_info/noip_icon.png';
 	}
@@ -183,9 +183,11 @@ class noip extends eqLogic {
         unlink($noip_path . '/data/intervention.png');
         unlink($noip_path . '/data/exception.png');
         unlink($noip_path . '/data/timeout.png');
+        
+        log::add(__CLASS__, 'debug', 'Log level : ' . log::getLogLevel('noip'));
         $cmd = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "' . $password . '" ' . config::byKey('renewThreshold','noip',7) . ' ' . $renew . ' 2';
-		
-		log::add(__CLASS__, 'info', 'Lancement script No-Ip : ' . $cmd);
+		$cmdInfo = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "#####" ' . config::byKey('renewThreshold','noip',7) . ' ' . $renew . ' 2';
+		log::add(__CLASS__, 'info', 'Lancement script No-Ip : ' . $cmdInfo);
 		exec($cmd . ' >> ' . log::getPathToLog('noip') . ' 2>&1'); 
         $string = file_get_contents($noip_path . '/data/output.json');
         log::add(__CLASS__, 'debug', $this->getHumanName() . ' file content: ' . $string);
@@ -194,7 +196,6 @@ class noip extends eqLogic {
         }
         $json_a = json_decode($string);
         if ($json_a === null) {
-            log::add(__CLASS__, 'error', $this->getHumanName() . ' JSON decode impossible');
             log::add(__CLASS__, 'error', $this->getHumanName() . ' JSON decode impossible');
         }
         return $json_a;
@@ -220,7 +221,7 @@ class noip extends eqLogic {
                 if (is_object($existingDomain)) {
                     if ($existingDomain->getIsEnable()) {
                         $existingDomain->checkAndUpdateCmd('hostname', $domain->hostname);
-                        $existingDomain->checkAndUpdateCmd('expiration', $repo->expirationdays);
+                        $existingDomain->checkAndUpdateCmd('expiration', $domain->expirationdays);
                     }
                 }
             }
