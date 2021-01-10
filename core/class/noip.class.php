@@ -281,6 +281,7 @@ class noip extends eqLogic {
                 if ($existingDomain->getIsEnable()) {
                     $existingDomain->checkAndUpdateCmd('hostname', $domain->hostname);
                     $existingDomain->checkAndUpdateCmd('expiration', $domain->expirationdays);
+                    $existingDomain->checkAndUpdateCmd('renew', $domain->renewed);
                 }
             }
         }
