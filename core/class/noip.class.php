@@ -151,7 +151,19 @@ class noip extends eqLogic {
                     $cmd->save();
                 }
             }
-		}
+		} else {
+            $cmd = $this->getCmd(null, 'refresh');
+            if (!is_object($cmd)) {
+                $cmd = new noipCmd();
+                $cmd->setLogicalId('refresh');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setName('Rafraichir');
+                $cmd->setType('action');
+                $cmd->setSubType('other');
+                $cmd->setEventOnly(1);
+                $cmd->save();
+            }
+        }
 	}
     
     public function preInsert() {
@@ -270,6 +282,16 @@ class noipCmd extends cmd
 
 	/*	   * **********************Getteur Setteur*************************** */
 	public function execute($_options = null) {
-	}
+        $eqLogic = $this->getEqLogic();
+        if (!is_object($eqLogic) || $eqLogic->getIsEnable() != 1) {
+            throw new Exception(__('Equipement desactivé impossible d\éxecuter la commande : ' . $this->getHumanName(), __FILE__));
+        }
+        log::add('noip', 'debug', 'Execution de la commande ' . $this->getLogicalId());
+        switch ($this->getLogicalId()) {
+            case "refresh":
+                $eqLogic->scan(1);
+                break;
+        }
+    }
 }
 ?>
