@@ -138,6 +138,18 @@ class noip extends eqLogic {
                     $cmd->setIsVisible(1);
                     $cmd->save();
                 }
+                $cmd = $this->getCmd(null, 'renew');
+                if ( ! is_object($cmd)) {
+                    $cmd = new noipCmd();
+                    $cmd->setName('Renew status');
+                    $cmd->setEqLogic_id($this->getId());
+                    $cmd->setLogicalId('renew');
+                    $cmd->setType('info');
+                    $cmd->setSubType('string');
+                    $cmd->setGeneric_type('GENERIC_INFO');
+                    $cmd->setIsVisible(1);
+                    $cmd->save();
+                }
             }
 		}
 	}
@@ -184,7 +196,7 @@ class noip extends eqLogic {
         unlink($noip_path . '/data/exception.png');
         unlink($noip_path . '/data/timeout.png');
         
-        log::add(__CLASS__, 'debug', 'Log level : ' . log::getLogLevel('noip'));
+        log::add(__CLASS__, 'debug', 'Log level : ' . log::convertLogLevel(log::getLogLevel('noip')));
         $cmd = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "' . $password . '" ' . config::byKey('renewThreshold','noip',7) . ' ' . $renew . ' 2';
 		$cmdInfo = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "#####" ' . config::byKey('renewThreshold','noip',7) . ' ' . $renew . ' 2';
 		log::add(__CLASS__, 'info', 'Lancement script No-Ip : ' . $cmdInfo);
@@ -193,10 +205,12 @@ class noip extends eqLogic {
         log::add(__CLASS__, 'debug', $this->getHumanName() . ' file content: ' . $string);
         if ($string === false) {
             log::add(__CLASS__, 'error', $this->getHumanName() . ' file content empty');
+            return null;
         }
         $json_a = json_decode($string);
         if ($json_a === null) {
             log::add(__CLASS__, 'error', $this->getHumanName() . ' JSON decode impossible');
+            return null;
         }
         return $json_a;
     }
@@ -207,9 +221,6 @@ class noip extends eqLogic {
 	}
     
     public function recordData($obj) {
-        if (isset($obj->message)) {
-            log::add(__CLASS__, 'error', $this->getHumanName() . ' users/'.$this->getConfiguration('login').'/repos:' . $obj->message);
-        } 
         else {
             foreach ($obj as $domain) {
                 $existingDomain = noip::byLogicalId($domain->hostname, 'noip');

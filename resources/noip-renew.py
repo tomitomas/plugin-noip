@@ -97,11 +97,12 @@ class Robot:
             host_name = host_link.text
             expiration_days = self.get_host_expiration_days(host, iteration)
             self.logger.log("{host_name} expires in {expiration_days} days".format(host_name=host_name,expiration_days=str(expiration_days)))
-            renewed = False
+            renewed = ""
+            if expiration_days < 7
+                renewed = "warning"
             if self.renew > 0 and expiration_days < self.threshold:
-                self.update_host(host_button, host_name)
+                renewed = self.update_host(host_button, host_name)
                 count += 1
-                renewed = True
             iteration += 1
             self.data.append({'hostname':host_name, 'expirationdays':expiration_days, 'renewed':renewed})
         self.browser.save_screenshot("/var/www/html/plugins/noip/data/results.png")
@@ -114,7 +115,7 @@ class Robot:
             self.browser.get(Robot.HOST_URL)
         except TimeoutException as e:
             self.browser.save_screenshot("/var/www/html/plugins/noip/data/timeout.png")
-            self.logger.log("Timeout: {e}".format(e=str(e),expiration_days=expiration_days))
+            self.logger.log("Timeout: {e}".format(e=str(e)))
 
     def update_host(self, host_button, host_name):
         self.logger.log("Updating {host_name}".format(host_name=host_name))
@@ -123,16 +124,18 @@ class Robot:
         intervention = False
         try:
             if self.browser.find_elements_by_xpath("//h2[@class='big']")[0].text == "Upgrade Now":
-                intervention = True
+                intervention = True      
         except:
             pass
 
         if intervention:
             if self.debug > 1:
                 self.browser.save_screenshot("/var/www/html/plugins/noip/data/intervention.png")
-            raise Exception("Manual intervention required. Upgrade text detected.")
-
-        self.browser.save_screenshot("{host_name}_success.png".format(host_name=host_name))
+            self.logger.log("{host_name} requires manual intervention for update".format(host_name=host_name,))
+            return "error"
+        else:
+            self.browser.save_screenshot("{host_name}_success.png".format(host_name=host_name))
+            return "ok"       
 
     @staticmethod
     def get_host_expiration_days(host, iteration):
@@ -173,6 +176,8 @@ class Robot:
         except Exception as e:
             self.logger.log(str(e))
             self.browser.save_screenshot("/var/www/html/plugins/noip/data/exception.png")
+            self.data = {}
+            self.data.append('msg':str(e))
             rc = 2
         finally:
             self.browser.quit()
