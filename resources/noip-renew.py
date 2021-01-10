@@ -98,7 +98,7 @@ class Robot:
             expiration_days = self.get_host_expiration_days(host, iteration)
             self.logger.log("{host_name} expires in {expiration_days} days".format(host_name=host_name,expiration_days=str(expiration_days)))
             renewed = ""
-            if expiration_days < 7
+            if expiration_days < 7:
                 renewed = "warning"
             if self.renew > 0 and expiration_days < self.threshold:
                 renewed = self.update_host(host_button, host_name)

@@ -208,11 +208,16 @@ class noip extends eqLogic {
         unlink($noip_path . '/data/exception.png');
         unlink($noip_path . '/data/timeout.png');
         
-        log::add(__CLASS__, 'debug', 'Log level : ' . log::convertLogLevel(log::getLogLevel('noip')));
-        $cmd = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "' . $password . '" ' . config::byKey('renewThreshold','noip',7) . ' ' . $renew . ' 2';
-		$cmdInfo = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "#####" ' . config::byKey('renewThreshold','noip',7) . ' ' . $renew . ' 2';
+        $loglevel = 0;
+        if (log::convertLogLevel(log::getLogLevel('noip')) == "debug") {
+           $loglevel = 2; 
+        }
+
+        $cmd = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "' . $password . '" ' . config::byKey('renewThreshold','noip',7) . ' ' . $renew . ' ' . $loglevel;
+		$cmdInfo = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "#####" ' . config::byKey('renewThreshold','noip',7) . ' ' . $renew . ' ' . $loglevel;
 		log::add(__CLASS__, 'info', 'Lancement script No-Ip : ' . $cmdInfo);
-		exec($cmd . ' >> ' . log::getPathToLog('noip') . ' 2>&1'); 
+		
+        exec($cmd . ' >> ' . log::getPathToLog('noip') . ' 2>&1'); 
         $string = file_get_contents($noip_path . '/data/output.json');
         log::add(__CLASS__, 'debug', $this->getHumanName() . ' file content: ' . $string);
         if ($string === false) {
