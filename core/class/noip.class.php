@@ -224,6 +224,10 @@ class noip extends eqLogic {
             log::add(__CLASS__, 'error', $this->getHumanName() . ' JSON decode impossible');
             return null;
         }
+        if (isset($obj->msg)) {
+            log::add(__CLASS__, 'error', $eqLogic->getHumanName() . ' error while executing Python script: ' . $obj->message);
+            return null;
+        } 
         return $json_a;
     }
 
@@ -233,19 +237,17 @@ class noip extends eqLogic {
 	}
     
     public function recordData($obj) {
-        else {
-            foreach ($obj as $domain) {
+        foreach ($obj as $domain) {
+            $existingDomain = noip::byLogicalId($domain->hostname, 'noip');
+            if (!is_object($existingDomain)) {
+                // new domain
+                noip::createDomain($domain, $this->getConfiguration('login'));
                 $existingDomain = noip::byLogicalId($domain->hostname, 'noip');
-                if (!is_object($existingDomain)) {
-                    // new domain
-                    noip::createDomain($domain, $this->getConfiguration('login'));
-                    $existingDomain = noip::byLogicalId($domain->hostname, 'noip');
-                }
-                if (is_object($existingDomain)) {
-                    if ($existingDomain->getIsEnable()) {
-                        $existingDomain->checkAndUpdateCmd('hostname', $domain->hostname);
-                        $existingDomain->checkAndUpdateCmd('expiration', $domain->expirationdays);
-                    }
+            }
+            if (is_object($existingDomain)) {
+                if ($existingDomain->getIsEnable()) {
+                    $existingDomain->checkAndUpdateCmd('hostname', $domain->hostname);
+                    $existingDomain->checkAndUpdateCmd('expiration', $domain->expirationdays);
                 }
             }
         }
