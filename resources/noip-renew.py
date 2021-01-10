@@ -176,8 +176,7 @@ class Robot:
         except Exception as e:
             self.logger.log(str(e))
             self.browser.save_screenshot("/var/www/html/plugins/noip/data/exception.png")
-            self.data = {}
-            self.data.append('msg':str(e))
+            self.data = {'msg':str(e)}
             rc = 2
         finally:
             self.browser.quit()
