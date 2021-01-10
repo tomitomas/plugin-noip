@@ -188,14 +188,14 @@ class noip extends eqLogic {
 		log::add(__CLASS__, 'info', 'Lancement script No-Ip : ' . $cmd);
 		exec($cmd . ' >> ' . log::getPathToLog('noip') . ' 2>&1'); 
         $string = file_get_contents($noip_path . '/data/output.json');
-        log::add(__CLASS__, 'debug', $eqLogic->getHumanName() . ' file content: ' . $string);
+        log::add(__CLASS__, 'debug', $this->getHumanName() . ' file content: ' . $string);
         if ($string === false) {
-            log::add(__CLASS__, 'error', $eqLogic->getHumanName() . ' file content empty');
+            log::add(__CLASS__, 'error', $this->getHumanName() . ' file content empty');
         }
         $json_a = json_decode($string);
         if ($json_a === null) {
-            log::add(__CLASS__, 'error', $eqLogic->getHumanName() . ' JSON decode impossible');
-            log::add(__CLASS__, 'error', $eqLogic->getHumanName() . ' JSON decode impossible');
+            log::add(__CLASS__, 'error', $this->getHumanName() . ' JSON decode impossible');
+            log::add(__CLASS__, 'error', $this->getHumanName() . ' JSON decode impossible');
         }
         return $json_a;
     }
