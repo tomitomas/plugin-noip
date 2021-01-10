@@ -73,10 +73,7 @@ class noip extends eqLogic {
             }
             $obj = $eqLogic->executeNoIpScript($eqLogic->getConfiguration('login'), $eqLogic->getConfiguration('password'), 0);
 
-            if (isset($obj->message)) {
-                log::add(__CLASS__, 'error', $eqLogic->getHumanName() . ' users/'.$eqLogic->getConfiguration('login').'/repos:' . $obj->message);
-            } 
-            else {
+            if (!is_null($obj)) {
                 foreach ($obj as $domain) {
                     $existingDomain = noip::byLogicalId($domain->hostname, 'noip');
                     if (!is_object($existingDomain)) {
@@ -178,17 +175,27 @@ class noip extends eqLogic {
     
     public function executeNoIpScript($login, $password, $renew) {
         $noip_path = dirname(__FILE__) . '/../..';
+        unlink($noip_path . '/data/output.json');
+        unlink($noip_path . '/data/debug1.png');
+        unlink($noip_path . '/data/debug2.png');
+        unlink($noip_path . '/data/debug3.png');
+        unlink($noip_path . '/data/results.png');
+        unlink($noip_path . '/data/intervention.png');
+        unlink($noip_path . '/data/exception.png');
+        unlink($noip_path . '/data/timeout.png');
         $cmd = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "' . $password . '" ' . config::byKey('renewThreshold','noip',7) . ' ' . $renew . ' 2';
 		
 		log::add(__CLASS__, 'info', 'Lancement script No-Ip : ' . $cmd);
 		exec($cmd . ' >> ' . log::getPathToLog('noip') . ' 2>&1'); 
         $string = file_get_contents($noip_path . '/data/output.json');
+        log::add(__CLASS__, 'debug', $eqLogic->getHumanName() . ' file content: ' . $string);
         if ($string === false) {
-            // deal with error...
+            log::add(__CLASS__, 'error', $eqLogic->getHumanName() . ' file content empty');
         }
-        $json_a = json_decode($string, true);
+        $json_a = json_decode($string);
         if ($json_a === null) {
-            // deal with error...
+            log::add(__CLASS__, 'error', $eqLogic->getHumanName() . ' JSON decode impossible');
+            log::add(__CLASS__, 'error', $eqLogic->getHumanName() . ' JSON decode impossible');
         }
         return $json_a;
     }
