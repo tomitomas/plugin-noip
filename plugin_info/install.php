@@ -24,14 +24,17 @@ function noip_install() {
         config::save('renewThreshold', 7, 'noip');
     }
     
-	$cron = cron::byClassAndFunction('noip', 'pull');
+	$cron = cron::byClassAndFunction('noip', 'autoCheck');
 	if ( ! is_object($cron)) {
+        $randMinute = rand(3, 59);
+        $randHour = rand(2, 22);
+        $cronExpr = $randMinute . ' ' . $randHour . ' * * *';
 		$cron = new cron();
 		$cron->setClass('noip');
-		$cron->setFunction('pull');
+		$cron->setFunction('autoCheck');
 		$cron->setEnable(1);
 		$cron->setDeamon(0);
-		$cron->setSchedule('0 14 * * *');
+		$cron->setSchedule($cronExpr);
 		$cron->save();
 	}
 }
@@ -44,7 +47,7 @@ function noip_update() {
 }
 
 function noip_remove() {
-	$cron = cron::byClassAndFunction('noip', 'pull');
+	$cron = cron::byClassAndFunction('noip', 'autoCheck');
 	if (is_object($cron)) {
 		$cron->stop();
 		$cron->remove();

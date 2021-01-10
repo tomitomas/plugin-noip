@@ -26,9 +26,23 @@ class noip extends eqLogic {
 
 	/* * ***********************Methode static*************************** */
 
-	public static function pull() {
+	public static function autoCheck() {
 		foreach (self::byType('noip') as $eqLogic) {
 			$eqLogic->scan(1);
+		}
+        $cron = cron::byClassAndFunction('noip', 'autoCheck');
+        if (is_object($cron)) {
+            $randMinute = rand(3, 59);
+            $randHour = rand(2, 22);
+            $cronExpr = $randMinute . ' ' . $randHour . ' * * *';
+            $cron->setSchedule($cronExpr);
+            $cron->save();
+        }
+        foreach (self::byType('noip') as $eqLogic) {
+            if ($eqLogic->getConfiguration('type') == 'account') {
+                $eqLogic->checkAndUpdateCmd('nextcheck', $cron->getNextRunDate());
+                log::add('noip', 'debug', "Prochaine vérification automatique pour ".$eqLogic->getName()." : ". $cron->getNextRunDate());
+            }
 		}
 	}
 
@@ -163,6 +177,20 @@ class noip extends eqLogic {
                 $cmd->setEventOnly(1);
                 $cmd->save();
             }
+            $cmd = $this->getCmd(null, 'nextcheck');
+            if ( ! is_object($cmd)) {
+                $cmd = new noipCmd();
+                $cmd->setName('Next automatic check');
+                $cmd->setEqLogic_id($this->getId());
+                $cmd->setLogicalId('nextcheck');
+                $cmd->setType('info');
+                $cmd->setSubType('string');
+                $cmd->setGeneric_type('GENERIC_INFO');
+                $cmd->setIsVisible(1);
+                $cmd->save();
+            }
+            $cron = cron::byClassAndFunction('noip', 'autoCheck');
+            $this->checkAndUpdateCmd('nextcheck', $cron->getNextRunDate());
         }
 	}
     
