@@ -322,6 +322,8 @@ class noip extends eqLogic {
 		}
         
         $replace['#domains#'] = $list;
+        $nextcheckCmd = $this->getCmd(null, 'nextcheck');
+        $replace['#nextcheck#'] = $nextcheckCmd->execCmd();
 
         $html = template_replace($replace, getTemplate('core', $version, 'noip.template', __CLASS__));
         cache::set('widgetHtml' . $_version . $this->getId(), $html, 0);
