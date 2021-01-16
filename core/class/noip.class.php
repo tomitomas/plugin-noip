@@ -303,9 +303,9 @@ class noip extends eqLogic {
         $eqLogics = eqLogic::byType('noip');
 		foreach ($eqLogics as $eqLogic) {
 			if($eqLogic->getConfiguration('type') == 'domain' && $eqLogic->getConfiguration('login') == $this->getConfiguration('login')) {
-                $hostnameCmd = $eqLogic->getCmd('hostname');
-                $expirationCmd = $eqLogic->getCmd('expiration');
-                $renewCmd = $eqLogic->getCmd('renew');
+                $hostnameCmd = $eqLogic->getCmd(null, 'hostname');
+                $expirationCmd = $eqLogic->getCmd(null, 'expiration');
+                $renewCmd = $eqLogic->getCmd(null, 'renew');
 				$list = $list . "<tr><td>" . $hostnameCmd->execCmd() . "</td><td>" . $expirationCmd->execCmd() . "</td><td>" . $renewCmd->execCmd() . "</td></tr>";
 			}
 		}
