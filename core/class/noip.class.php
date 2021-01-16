@@ -196,11 +196,11 @@ class noip extends eqLogic {
     
     public function preInsert() {
       if ($this->getConfiguration('type','') == 'account') {
-          $this->setDisplay('height','75px');
+          $this->setDisplay('height','125px');
           $this->setIsVisible(1);
           $this->setConfiguration('widgetTemplate', 1);
       } else {
-          $this->setDisplay('height','225px');
+          $this->setDisplay('height','150px');
           $this->setIsVisible(0);
       }        
       $this->setDisplay('width', '280px');
@@ -306,7 +306,7 @@ class noip extends eqLogic {
                 $hostnameCmd = $eqLogic->getCmd(null, 'hostname');
                 $expirationCmd = $eqLogic->getCmd(null, 'expiration');
                 $renewCmd = $eqLogic->getCmd(null, 'renew');
-				$list = $list . "<tr><td>" . $hostnameCmd->execCmd() . "</td><td>" . $expirationCmd->execCmd() . "</td><td>" . $renewCmd->execCmd() . "</td></tr>";
+				$list = $list . "<tr><td>" . $hostnameCmd->execCmd() . "</td><td>" . $expirationCmd->execCmd() . " " . __("jour(s)",__FILE__) . "</td><td>" . $renewCmd->execCmd() . "</td></tr>";
 			}
 		}
         
