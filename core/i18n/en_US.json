@@ -1,12 +1,12 @@
 {
-    "plugins\/github\/plugin_info\/configuration.php": {
+    "plugins\/noip\/plugin_info\/configuration.php": {
         "401 - Accès non autorisé": "401 - Unauthorized access",
         "Paramètres": "Parameters",
         "Récupérer les repositories privés": "Consider private repositories",
         "Récupérer les forks": "Consider forks",
         "Pièce par défaut pour les nouveaux repositories": "Default room for new repositories"
     },
-    "plugins\/linksys\/desktop\/php\/github.php": {
+    "plugins\/noip\/desktop\/php\/noip.php": {
         "401 - Accès non autorisé": "401 - Unauthorized access",
         "Gestion": "Management",
         "Ajouter": "Add",
@@ -37,7 +37,7 @@
         "Sauvegarder": "Save",
         "Supprimer": "Delete"
     },
-    "plugins\/linksys\/desktop\/js\/linksys.js": {
+    "plugins\/noip\/desktop\/js\/noip.js": {
         "Min": "Min",
         "Max": "Max",
         "Unité": "Unit",
@@ -46,6 +46,7 @@
         "Tester": "Test",
         "Synchronisation réussie": "Synchronization successful"
     },
-    "plugins\/linksys\/core\/class\/linksys.class.php": {
+    "plugins\/noip\/core\/class\/noip.class.php": {
+        "jour(s)": "day(s)"
     }
 }
