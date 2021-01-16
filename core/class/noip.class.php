@@ -203,7 +203,7 @@ class noip extends eqLogic {
           $this->setDisplay('height','150px');
           $this->setIsVisible(0);
       }        
-      $this->setDisplay('width', '280px');
+      $this->setDisplay('width', '340px');
       $this->setIsEnable(1);
     }        
 
@@ -306,7 +306,16 @@ class noip extends eqLogic {
                 $hostnameCmd = $eqLogic->getCmd(null, 'hostname');
                 $expirationCmd = $eqLogic->getCmd(null, 'expiration');
                 $renewCmd = $eqLogic->getCmd(null, 'renew');
-				$list = $list . "<tr><td>" . $hostnameCmd->execCmd() . "</td><td>" . $expirationCmd->execCmd() . " " . __("jour(s)",__FILE__) . "</td><td>" . $renewCmd->execCmd() . "</td></tr>";
+                $status = $renewCmd->execCmd();
+                $icon = '';
+                if ($status == "ko") {
+                    $icon = "<i class='fas fa-minus-circle'></i>";
+                } else if ($status == "warning") {
+                    $icon = "<i class='fas fa-exclamation-triangle'>";
+                } else {
+                    $icon = "<i class='far fa-check-circle'></i>";
+                }
+				$list = $list . "<tr><td>" . $hostnameCmd->execCmd() . "</td><td>" . $expirationCmd->execCmd() . " " . __("jour(s)",__FILE__) . "</td><td>" . $icon . "</td></tr>";
 			}
 		}
         
