@@ -48,7 +48,7 @@
     "plugins\/noip\/core\/class\/noip.class.php": {
         "jour(s)": "day(s)",
         "Le renouvellement automatique a échoué. Rendez-vous sur votre espace no-ip.com pour effectuer le renouvellement manuellement": "Automatic renewal failed. Go to your no-ip.com space to renew it manually",
-        "La date d\'expiration est proche. Le renouvellement automatique se fera dans ": "Expiration date is close. Automatic renewal will occur in ",
-        "Le renouvellement n\'est pas nécesaire pour l\'instant": "Renewal is not required for now"
+        "La date d'expiration est proche. Le renouvellement automatique se fera dans ": "Expiration date is close. Automatic renewal will occur in ",
+        "Le renouvellement n'est pas nécesaire pour l'instant": "Renewal is not required for now"
     }
 }
