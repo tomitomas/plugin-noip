@@ -25,9 +25,11 @@ $('.eqLogicAttr[data-l1key=configuration][data-l2key=type]').on('change',functio
 	if ($(this).value() == 'account') {
 		$('#div_loginNoIp').show();
 		$('#div_passNoIp').show();
+        $('#div_widgetNoIp').show();
 	} else {
 		$('#div_loginNoIp').hide();
 		$('#div_passNoIp').hide();
+        $('#div_widgetNoIp').hide();
 	}
 });
 
@@ -42,10 +44,12 @@ function printEqLogic(_eqLogic) {
 	if (_eqLogic.configuration.type=="account") {
 		$('#div_loginNoIp').show();
 		$('#div_passNoIp').show();
+        $('#div_widgetNoIp').show();
 	}
 	if (_eqLogic.configuration.type=="domain") {
 		$('#div_loginNoIp').hide();
 		$('#div_passNoIp').hide();
+        $('#div_widgetNoIp').hide();
 	}
 }
 

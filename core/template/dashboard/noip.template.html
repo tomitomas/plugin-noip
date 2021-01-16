@@ -1,0 +1,34 @@
+<div class="eqLogic eqLogic-widget allowResize #eqType#" style="#style#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-version="#version#" data-eqType="#eqType#" data-translate-category="#translate_category#" data-category="#category#" data-tags="#tags#" >
+    <link rel="stylesheet" href="plugins/noip/data/css/noip.template.css"/>
+	<center class="widget-name">
+		<span class="warning" title="#alert_name#">
+			<i class='#alert_icon#'></i>
+		</span>
+        <span class="cmd refresh pull-right cursor" data-cmd_id="#refresh_id#">
+			<i class="fas fa-sync"></i>
+		</span>
+		<span class="reportModeVisible">#name_display# <span class="object_name">#object_name#</span></span>
+		<a href="#eqLink#" class="reportModeHidden">#name_display# <span class="object_name">#object_name#</span></a>
+	</center>   
+    <div>
+		<center>
+            <table>
+                <tr>
+                    <th>Domaine</th>
+                    <th>Expire dans</th>
+                    <th>Status</th>
+                </tr>
+                #domains#
+            </table>
+		</center>
+	</div>
+    <script>    
+        if ('#refresh_id#' != ''){
+			$('.eqLogic[data-eqLogic_uid=#uid#] .refresh').on('click', function () {
+				jeedom.cmd.execute({id: '#refresh_id#'});
+			});
+		}else{
+			$('.eqLogic[data-eqLogic_uid=#uid#] .refresh').remove();
+		}
+    </script> 
+</div>

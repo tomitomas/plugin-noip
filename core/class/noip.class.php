@@ -197,13 +197,14 @@ class noip extends eqLogic {
     public function preInsert() {
       if ($this->getConfiguration('type','') == 'account') {
           $this->setDisplay('height','75px');
+          $this->setIsVisible(1);
+          $this->setConfiguration('widgetTemplate', 1);
       } else {
           $this->setDisplay('height','225px');
-      }
-        
+          $this->setIsVisible(0);
+      }        
       $this->setDisplay('width', '280px');
       $this->setIsEnable(1);
-      $this->setIsVisible(1);
     }        
 
 	public function preRemove() {
@@ -287,6 +288,35 @@ class noip extends eqLogic {
         }
     }
     
+    public function toHtml($_version = 'dashboard') {
+        if ($this->getConfiguration('widgetTemplate') != 1 || $this->getConfiguration('type') == 'domain') {
+    		return parent::toHtml($_version);
+    	}
+        $replace = $this->preToHtml($_version);
+        if (!is_array($replace)) {
+            return $replace;
+        }
+        $version = jeedom::versionAlias($_version);
+
+        $list = "";
+        
+        $eqLogics = eqLogic::byType('noip');
+		foreach ($eqLogics as $eqLogic) {
+			if($eqLogic->getConfiguration('type') == 'domain' && $eqLogic->getConfiguration('login') == $this->getConfiguration('login')) {
+                $hostnameCmd = $eqLogic->getCmd('hostname');
+                $expirationCmd = $eqLogic->getCmd('expiration');
+                $renewCmd = $eqLogic->getCmd('renew');
+				$list = $list . "<tr><td>" . $hostnameCmd->execCmd() . "</td><td>" . $expirationCmd->execCmd() . "</td><td>" . $renewCmd->execCmd() . "</td></tr>";
+			}
+		}
+        
+        $replace['#domains#'] = $list;
+
+        $html = template_replace($replace, getTemplate('core', $version, 'noip.template', __CLASS__));
+        cache::set('widgetHtml' . $_version . $this->getId(), $html, 0);
+        return $html;
+    }
+    
     public static function dependancy_install() {
 		log::remove(__CLASS__ . '_update');
 		return array('script' => dirname(__FILE__) . '/../../resources/install_apt.sh ' . jeedom::getTmpFolder(__CLASS__) . '/dependency', 'log' => log::getPathToLog(__CLASS__ . '_update'));
@@ -308,15 +338,11 @@ class noip extends eqLogic {
 
 class noipCmd extends cmd
 {
-	/*	   * *************************Attributs****************************** */
-
-
-	/*	   * ***********************Methode static*************************** */
-
-
-	/*	   * *********************Methode d'instance************************* */
-
-	/*	   * **********************Getteur Setteur*************************** */
+    
+    public function dontRemoveCmd() {
+		return true;
+	}
+    
 	public function execute($_options = null) {
         $eqLogic = $this->getEqLogic();
         if (!is_object($eqLogic) || $eqLogic->getIsEnable() != 1) {
