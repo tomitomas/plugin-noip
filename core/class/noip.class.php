@@ -196,13 +196,12 @@ class noip extends eqLogic {
     
     public function preInsert() {
       if ($this->getConfiguration('type','') == 'account') {
-          $this->setDisplay('height','125px');
           $this->setIsVisible(1);
           $this->setConfiguration('widgetTemplate', 1);
       } else {
-          $this->setDisplay('height','150px');
           $this->setIsVisible(0);
-      }        
+      }  
+      $this->setDisplay('height','150px');
       $this->setDisplay('width', '340px');
       $this->setIsEnable(1);
     }        
