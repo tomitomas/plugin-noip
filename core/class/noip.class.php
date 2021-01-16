@@ -302,14 +302,14 @@ class noip extends eqLogic {
         
         $eqLogics = eqLogic::byType('noip');
 		foreach ($eqLogics as $eqLogic) {
-			if($eqLogic->getConfiguration('type') == 'domain' && $eqLogic->getConfiguration('login') == $this->getConfiguration('login')) {
+			if($eqLogic->getConfiguration('type') == 'domain' && $eqLogic->getConfiguration('login') == $this->getConfiguration('login') && $eqLogic->getIsEnable() != 0) {
                 $hostnameCmd = $eqLogic->getCmd(null, 'hostname');
                 $expirationCmd = $eqLogic->getCmd(null, 'expiration');
                 $deadline = $expirationCmd->execCmd();
                 $renewCmd = $eqLogic->getCmd(null, 'renew');
                 $status = $renewCmd->execCmd();
                 $icon = "<div class='cursor tooltipstered' title=";
-                $renew = $deadine - config::byKey('renewThreshold','noip',7);
+                $renew = $deadline - config::byKey('renewThreshold','noip',7);
                 if ($status === "ko") {
                     $icon = $icon . "\"" . __("Le renouvellement automatique a échoué. Rendez-vous sur votre espace no-ip.com pour effectuer le renouvellement manuellement",__FILE__) . "\"><i class='fas fa-minus-circle'></i></div>";
                 } else if ($status === "warning") {
@@ -317,7 +317,7 @@ class noip extends eqLogic {
                 } else {
                     $icon = $icon . "\"" . __("Le renouvellement n'est pas nécesaire pour l'instant",__FILE__) . "\"><i class='far fa-check-circle'></i></div>";
                 }
-				$list = $list . "<tr><td>" . $hostnameCmd->execCmd() . "</td><td>" . $deadline . " " . __("jour(s)",__FILE__) . "</td><td>" . $icon . "</td></tr>";
+				$list = $list . "<tr><td><a href='" . $eqLogic->getLinkToConfiguration() . "' class='reportModeHidden'>" . $hostnameCmd->execCmd() . "</a></td><td>" . $deadline . " " . __("jour(s)",__FILE__) . "</td><td>" . $icon . "</td></tr>";
 			}
 		}
         
