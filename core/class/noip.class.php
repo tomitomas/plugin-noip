@@ -307,13 +307,13 @@ class noip extends eqLogic {
                 $expirationCmd = $eqLogic->getCmd(null, 'expiration');
                 $renewCmd = $eqLogic->getCmd(null, 'renew');
                 $status = $renewCmd->execCmd();
-                $icon = '';
+                $icon = "<div class='cursor tooltipstered' title='my test'>";
                 if ($status == "ko") {
-                    $icon = "<i class='fas fa-minus-circle'></i>";
+                    $icon = $icon . "<i class='fas fa-minus-circle'></i></div>";
                 } else if ($status == "warning") {
-                    $icon = "<i class='fas fa-exclamation-triangle'>";
+                    $icon = $icon . "<i class='fas fa-exclamation-triangle'></div>";
                 } else {
-                    $icon = "<i class='far fa-check-circle'></i>";
+                    $icon = $icon . "<i class='far fa-check-circle'></i></div>";
                 }
 				$list = $list . "<tr><td>" . $hostnameCmd->execCmd() . "</td><td>" . $expirationCmd->execCmd() . " " . __("jour(s)",__FILE__) . "</td><td>" . $icon . "</td></tr>";
 			}
