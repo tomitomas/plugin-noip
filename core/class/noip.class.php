@@ -305,17 +305,19 @@ class noip extends eqLogic {
 			if($eqLogic->getConfiguration('type') == 'domain' && $eqLogic->getConfiguration('login') == $this->getConfiguration('login')) {
                 $hostnameCmd = $eqLogic->getCmd(null, 'hostname');
                 $expirationCmd = $eqLogic->getCmd(null, 'expiration');
+                $deadline = $expirationCmd->execCmd();
                 $renewCmd = $eqLogic->getCmd(null, 'renew');
                 $status = $renewCmd->execCmd();
-                $icon = "<div class='cursor tooltipstered' title='my test'>";
+                $icon = "<div class='cursor tooltipstered' title=";
+                $renew = $deadine - config::byKey('renewThreshold','noip',7);
                 if ($status == "ko") {
-                    $icon = $icon . "<i class='fas fa-minus-circle'></i></div>";
+                    $icon = $icon . "'" . __("Le renouvellement automatique a échoué. Rendez-vous sur votre espace no-ip.com pour effectuer le renouvellement manuellement",__FILE__) . "'><i class='far fa-check-circle'></i></div>";
                 } else if ($status == "warning") {
-                    $icon = $icon . "<i class='fas fa-exclamation-triangle'></div>";
+                    $icon = $icon . "'" . __("La date d'expiration est proche. Le renouvellement automatique se fera dans ",__FILE__) . $renew . " " . __("jour(s)",__FILE__) . "'><i class='fas fa-exclamation-triangle'></div>";
                 } else {
-                    $icon = $icon . "<i class='far fa-check-circle'></i></div>";
+                    $icon = $icon . "'" . __("Le renouvellement n'est pas nécesaire pour l'instant",__FILE__) . "'><i class='fas fa-minus-circle'></i></div>";
                 }
-				$list = $list . "<tr><td>" . $hostnameCmd->execCmd() . "</td><td>" . $expirationCmd->execCmd() . " " . __("jour(s)",__FILE__) . "</td><td>" . $icon . "</td></tr>";
+				$list = $list . "<tr><td>" . $hostnameCmd->execCmd() . "</td><td>" . $deadline . " " . __("jour(s)",__FILE__) . "</td><td>" . $icon . "</td></tr>";
 			}
 		}
         

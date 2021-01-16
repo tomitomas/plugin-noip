@@ -2,22 +2,22 @@
     "plugins\/noip\/plugin_info\/configuration.php": {
         "401 - Accès non autorisé": "401 - Accès non autorisé",
         "Paramètres": "Paramètres",
-        "Récupérer les repositories privés": "Récupérer les repositories privés",
-        "Récupérer les forks": "Récupérer les forks",
-        "Pièce par défaut pour les nouveaux repositories": "Pièce par défaut pour les nouveaux repositories"
+        "Pièce par défaut pour les nouveaux domaines": "Pièce par défaut pour les nouveaux domaines",
+        "Renouveler les noms de domaine quand ceux-ci arrivent à expiration dans : ": "Renouveler les noms de domaine quand ceux-ci arrivent à expiration dans : "
     },
     "plugins\/noip\/desktop\/php\/noip.php": {
         "401 - Accès non autorisé": "401 - Accès non autorisé",
         "Gestion": "Gestion",
         "Ajouter": "Ajouter",
         "Configuration": "Configuration",
-        "Scanner les repositories": "Scanner les repositories",
+        "Scanner les domaines": "Scanner les domaines",
+        "Ajouter un compte No-Ip": "Ajouter un compte No-Ip",
         "Scanner": "Scanner",
-        "Mes Comptes Github": "Mes Comptes Github",
-        "Vous n'avez pas encore de compte Github, cliquez sur Ajouter un équipement pour commencer": "Vous n'avez pas encore de compte Github, cliquez sur Ajouter un équipement pour commencer",
-        "Mes Repositories": "Mes Repositories",
+        "Mes Comptes No-Ip": "Mes Comptes No-Ip",
+        "Vous n'avez pas encore de compte No-Ip, cliquez sur Ajouter un équipement pour commencer": "Vous n'avez pas encore de compte No-Ip, cliquez sur Ajouter un équipement pour commencer",
+        "Mes Domaines": "Mes Domaines",
         "Rechercher": "Rechercher",
-        "Scannez les repositories pour les créer": "Scannez les repositories pour les créer",
+        "Scannez les domaines pour les créer": "Scannez les domaines pour les créer",
         "Configuration avancée": "Configuration avancée",
         "Equipement": "Equipement",
         "Commandes": "Commandes",
@@ -27,8 +27,8 @@
         "Catégorie": "Catégorie",
         "Activer": "Activer",
         "Visible": "Visible",
-        "Login Github": "Login Github",
-        "Token Github": "Token Github",
+        "Login No-Ip": "Login No-Ip",
+        "Mot de passe No-Ip": "Mot de passe No-Ip",
         "Id": "Id",
         "Nom": "Nom",
         "Type": "Type",
@@ -47,6 +47,9 @@
         "Synchronisation réussie": "Synchronisation réussie"
     },
     "plugins\/noip\/core\/class\/noip.class.php": {
-        "jour(s)": "jour(s)"
+        "jour(s)": "jour(s)",
+        "Le renouvellement automatique a échoué. Rendez-vous sur votre espace no-ip.com pour effectuer le renouvellement manuellement": "Le renouvellement automatique a échoué. Rendez-vous sur votre espace no-ip.com pour effectuer le renouvellement manuellement",
+        "La date d'expiration est proche. Le renouvellement automatique se fera dans ": "La date d'expiration est proche. Le renouvellement automatique se fera dans ",
+        "Le renouvellement n'est pas nécesaire pour l'instant": "Le renouvellement n'est pas nécesaire pour l'instant"
     }
 }
