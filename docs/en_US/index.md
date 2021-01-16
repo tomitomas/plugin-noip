@@ -30,7 +30,7 @@ On the plugin configuration page, you can choose:
 
 ## Equipments configuration
 
-To access the different **No-Ip** equipments, go to the menu **Plugins → Programming → No-Ip Renew**.
+To access the different **No-Ip** equipments, go to the menu **Plugins → Monitoring → No-Ip Renew**.
 
 Click on "Add a No-Ip account"
 
@@ -55,7 +55,7 @@ A dedicated widget's template is available to view your hostnames and their stat
 
 # Limitations
 
-Sometimes the renewal will fail because captcha verification is required (happens randomly). In such case, the command renew of concerned hostname will return "error". I encourage you to define an alert on this command to be warned.
+Sometimes the renewal will fail because captcha verification is required (happens randomly). In such case, the command "renew" of concerned hostname will return "error". I encourage you to define an alert on this command to be warned.
 
 # Contributions
 

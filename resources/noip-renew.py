@@ -103,7 +103,7 @@ class Robot:
             if self.renew > 0 and expiration_days < self.threshold:
                 renewed = self.update_host(host_button, host_name)
                 if renewed == "ok":
-                    expiration_days = 30
+                    expiration_days = self.get_host_expiration_days(host, iteration)
                 count += 1
             iteration += 1
             self.data.append({'hostname':host_name, 'expirationdays':expiration_days, 'renewed':renewed})
@@ -136,7 +136,7 @@ class Robot:
             self.logger.log("{host_name} requires manual intervention for update".format(host_name=host_name,))
             return "error"
         else:
-            self.browser.save_screenshot("{host_name}_success.png".format(host_name=host_name))
+            self.browser.save_screenshot("/var/www/html/plugins/noip/data/{host_name}_success.png".format(host_name=host_name))
             return "ok"       
 
     @staticmethod

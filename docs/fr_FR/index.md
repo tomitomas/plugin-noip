@@ -18,9 +18,9 @@ Ce script Python requiert les dépendances suivantes qui seront automatiquement 
 ## Cron
 
 Le plugin a sa propre tâche planifiée.
-Elle s'exécute tous le sjours à une heure et minute aléatoires.
-Jusqu'à ce que la date d'expiration est atteint, le plugin ne peut pas renouveler le domaine. Il récupèrera juste les différentes informations.
-Quand la date d'expiration est atteinte (ou proche de l'être en fcontion dela configuration, voir plus bas),le plugin renouvellera le nom de domaine.
+Elle s'exécute tous les jours à une heure et minute aléatoires.
+Jusqu'à ce que la date d'expiration soit atteinte, le plugin ne peut pas renouveler le domaine. Il récupèrera juste les différentes informations.
+Quand la date d'expiration est atteinte (ou proche de l'être en fonction de votre configuration, voir plus bas), le plugin renouvellera le nom de domaine.
 
 ## Configuration du plugin
 
@@ -30,7 +30,7 @@ Sur la page de configuration du plugin, vous pouvez choisir :
 
 ## Configuration des équipements
 
-Pour accéder aux différents équipements **No-Ip**, allez dans **Plugins → Programmation → No-Ip Renew**
+Pour accéder aux différents équipements **No-Ip**, allez dans **Plugins → Monitoring → No-Ip Renew**
 
 Cliquer sur "Ajouter un compte No-Ip".
 
@@ -48,14 +48,14 @@ Pour chaque compte No-Ip, les commandes suivantes sont disponibles :
 
 Pour chaque domaine, les commandes suivantes sont disponibles :
 - le nom de domaine
-- le nombre de jours avan expiration
+- le nombre de jours avant expiration
 - le statut de renouvellement : ok si correctement renouvelé ou si pas encore expiré, warning si le nombre de jours avant expiration est inférieur à 7, error si le renouvellement a échoué (très probablement parce qu'une intervention mannuelle est nécessaire)
 
 Un template de widget est également disponible pour visualiser vos domaines ainsi que leurs status.
 
 # Limitations
 
-Parfois, le renouvellement échouera car une vérification captcha est nécessaire. Il faudra le faire "manuellement" en se connectant sur votre espace No-Ip. Dans ce cas, la commande "renew" du domaine concerné retournera "error". je vous encourage à configurer une alert sur cette commane afin d'être prévenu.
+Parfois, le renouvellement échouera car une vérification captcha est nécessaire. Il faudra le faire "manuellement" en se connectant sur votre espace No-Ip. Dans ce cas, la commande "renew" du domaine concerné retournera "error". Je vous encourage à configurer une alerte sur cette commande afin d'être prévenu.
 
 # Contributions
 

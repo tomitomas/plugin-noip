@@ -2,14 +2,14 @@
     "id": "noip",
     "name": "No-Ip Renew",
     "description": {
-        "fr_FR": "Ce plugin permet de renouveler automatiquement vos noms de domaines gratuits no-ip.com (valables 1 mois).",
-        "en_US": "This plugin allows to automatically renew yur free no-ip.com domain names (valid 1 month)."
+        "fr_FR": "Ce plugin permet de renouveler automatiquement vos noms de domaines gratuits no-ip.com (opération à faire tous les 30 jours manuellement sinon).",
+        "en_US": "This plugin allows to automatically renew your free no-ip.com domain names (oepration to manually perform every 30 days instead)."
     },
     "utilization": "Ajoutez un compte no-ip.com , puis cliquez sur Scanner pour récupérer vos noms de domaines.",
     "licence": "AGPL",
     "author": "hugoKs3",
     "require": "4.0.62",
-    "category": "programming",
+    "category": "monitoring",
     "hasDependency": true,
     "hasOwnDeamon": false,
     "maxDependancyInstallTime": 45,
