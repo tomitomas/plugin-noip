@@ -1,6 +1,7 @@
 #!/bin/bash
 PROGRESS_FILE=/tmp/jeedom/noip/dependency
 touch ${PROGRESS_FILE}
+touch /tmp/jeedom/noip/dependancy_noip
 echo 0 > ${PROGRESS_FILE}
 echo "Launch install of noip dependencies"
 echo ""
@@ -57,21 +58,12 @@ if [[ -z  $pip3cmd ]]; then     # pip3 not found
 fi
 if [[ ! -z  $pip3cmd ]]; then     # pip3 found
     echo ""
-    echo "-- Upgrade setuptools with command $pip3cmd if not up to date"
-    if [ "$pyver" -lt "35" ]; then  # using 3.4 that is depreciated
-        $(sudo $pip3cmd install setuptools > /tmp/jeedom/noip/dependancy_noip)
-    else
-        $(sudo $pip3cmd install 'setuptools>=42.0.0' > /tmp/jeedom/noip/dependancy_noip)
-    fi
-    cat /tmp/jeedom/noip/dependancy_noip
-    echo 78 > ${PROGRESS_FILE}
-    echo ""
     echo "-- Installed version of pip :"
     echo $($pip3cmd -V)
     echo ""
     echo "-- Installation of python library 'selenium' with command $pip3cmd"
     $(sudo $pip3cmd install 'selenium' > /tmp/jeedom/noip/dependancy_noip)
-    cat /tmp/dependancy_googlecast
+    cat /tmp/jeedom/noip/dependancy_noip
     echo 100 > ${PROGRESS_FILE}
     echo ""
     echo "-- Installation of dependencies is done !"
