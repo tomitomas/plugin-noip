@@ -1,61 +1,84 @@
 #!/bin/bash
-
-# This file is part of Plugin openzwave for jeedom.
-#
-#  Plugin openzwave for jeedom is free software: you can redistribute it and/or modify
-#  it under the terms of the GNU General Public License as published by
-#  the Free Software Foundation, either version 3 of the License, or
-#  (at your option) any later version.
-#
-#  Plugin openzwave for jeedom is distributed in the hope that it will be useful,
-#  but WITHOUT ANY WARRANTY; without even the implied warranty of
-#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-#  GNU General Public License for more details.
-#
-#  You should have received a copy of the GNU General Public License
-#  along with Plugin openzwave for jeedom. If not, see <http://www.gnu.org/licenses/>.
-
-#set -x  # make sure each command is printed in the terminal
 PROGRESS_FILE=/tmp/jeedom/noip/dependency
 touch ${PROGRESS_FILE}
 echo 0 > ${PROGRESS_FILE}
-echo "Lancement de l'installation/mise à jour des dépendances no-ip"
-
-BASEDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-
-function apt_install {
-  sudo apt-get -y install "$@"
-  if [ $? -ne 0 ]; then
-    echo "could not install $1 - abort"
-    rm ${PROGRESS_FILE}
-    exit 1
-  fi
-}
-
-function pip_install {
-  sudo python3 -m pip install "$@"
-  if [ $? -ne 0 ]; then
-    echo "could not install $p - abort"
-    rm ${PROGRESS_FILE}
-    exit 1
-  fi
-}
-
-echo 20 > ${PROGRESS_FILE}
-sudo rm -f /var/lib/dpkg/updates/*
-sudo apt-get clean
-echo 40 > ${PROGRESS_FILE}
+echo "Launch install of noip dependencies"
+echo ""
+export DEBIAN_FRONTEND=noninteractive
+echo "-- Current OS version :"
+sudo lsb_release -d
+echo ""
+echo "-- Updating repo..."
 sudo apt-get update
-echo 60 > ${PROGRESS_FILE}
-echo "Installation des dependances"
-sudo apt -y install chromium-chromedriver || \
-sudo apt -y install chromium-driver || \
-sudo apt -y install chromedriver
-apt_install chromium-browser python3 python3-pip
-echo 80 > ${PROGRESS_FILE}
-# Python
-echo "Installation des dependances Python"
-pip_install selenium
+echo 20 > ${PROGRESS_FILE}
+echo ""
+echo "-- Installation of python3 and dependencies"
+sudo apt-get install -y python3 python-dev build-essential
+echo ""
+echo "-- Installed version of Python :"
+python3 -V
+pyver=$(python3 -V 2>&1 | sed 's/.* \([0-9]\).\([0-9]\+\).*/\1\2/')
+if [ "$pyver" -lt "35" ]; then  # using 3.4 that is deprecated
+    echo "  Your version of python is not compatible with this plugin, installation might not work correctly !"
+else
+    echo "  Your version of python is compatible with this plugin."
+fi
+echo 50 > ${PROGRESS_FILE}
+echo ""
+echo "-- Installation of pip for python3 and necessary libraries"
+sudo apt-get install -y python3-dev python-requests python3-pip
+echo 68 > ${PROGRESS_FILE}
+echo ""
+echo "-- Installation of chromium"
+sudo apt-get install -y chromium-chromedriver || \
+sudo apt-get install -y chromium-driver || \
+sudo apt-get install -y chromedriver
+OS=$(hostnamectl | grep -i "operating system")
+case $OS in
+    *Arch?Linux*)
+        ;;
+    *)
+        sudo apt-get install -y chromium-browser
+        ;;
+esac
+echo 71 > ${PROGRESS_FILE}
+echo ""
+# get pip3 command (different depending of OS such as raspberry)
+pip3cmd=$(compgen -ac | grep -E '^pip-?3' | sort -r | head -1)
+if [[ -z  $pip3cmd ]]; then     # pip3 not found
+    if python3 -m pip -V 2>&1 | grep -q -i "^pip " ; then     # but try other way
+        pip3cmd="python3 -m pip"
+    else # something is wrong with pip3 so reinstall it
+        echo "-- Something is wrong with pip3, trying to re-install :"
+        sudo python3 -m pip uninstall -y pip
+        sudo apt-get -y --reinstall install python3-pip
+        pip3cmd=$(compgen -ac | grep -E '^pip-?3' | sort -r | head -1)
+    fi
+fi
+if [[ ! -z  $pip3cmd ]]; then     # pip3 found
+    echo ""
+    echo "-- Upgrade setuptools with command $pip3cmd if not up to date"
+    if [ "$pyver" -lt "35" ]; then  # using 3.4 that is depreciated
+        $(sudo $pip3cmd install setuptools > /tmp/jeedom/noip/dependancy_noip)
+    else
+        $(sudo $pip3cmd install 'setuptools>=42.0.0' > /tmp/jeedom/noip/dependancy_noip)
+    fi
+    cat /tmp/jeedom/noip/dependancy_noip
+    echo 78 > ${PROGRESS_FILE}
+    echo ""
+    echo "-- Installed version of pip :"
+    echo $($pip3cmd -V)
+    echo ""
+    echo "-- Installation of python library 'selenium' with command $pip3cmd"
+    $(sudo $pip3cmd install 'selenium' > /tmp/jeedom/noip/dependancy_noip)
+    cat /tmp/dependancy_googlecast
+    echo 100 > ${PROGRESS_FILE}
+    echo ""
+    echo "-- Installation of dependencies is done !"
+    rm -f /tmp/jeedom/noip/dependancy_noip
+else
+    echo ""
+    echo "Error: Cound not found pip3 program to install python dependencies ! Check doc FAQ for possible resolution."
+fi
 echo 100 > ${PROGRESS_FILE}
-echo "Everything is successfully installed!"
 rm ${PROGRESS_FILE}

@@ -335,15 +335,16 @@ class noip extends eqLogic {
 	}
     
     public static function dependancy_info() {
-		$return = array();
-		$return['log'] = 'noip_update';
-		$return['progress_file'] = jeedom::getTmpFolder(__CLASS__) . '/dependency';
-        if (file_exists(jeedom::getTmpFolder(__CLASS__) . '/dependency')) {
-			$return['state'] = 'in_progress';
-		} else {
+        $return = array();
+        $return['log'] = 'noip_update';
+        $return['progress_file'] = '/tmp/jeedom/noip/dependency';
+        $cmd = system::getCmdSudo() . '/bin/bash ' . dirname(__FILE__) . '/../../resources/install_check.sh';
+        if (exec($cmd) == "ok") {
             $return['state'] = 'ok';
-		}
-		return $return;
+        } else {
+            $return['state'] = 'nok';
+        }
+        return $return;
 	}
 
 }
