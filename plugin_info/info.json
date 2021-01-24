@@ -15,6 +15,9 @@
     "maxDependancyInstallTime": 45,
     "changelog": "https:\/\/hugoks3.github.io\/plugin-noip\/#language#\/changelog",
     "documentation": "https:\/\/hugoks3.github.io\/plugin-noip\/#language#\/",
+    "link" : {
+		"forum":"https://community.jeedom.com/t/nouveau-plugin-no-ip-renew/49829"
+	},
     "language": [
         "fr_FR",
         "en_US"
