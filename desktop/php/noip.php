@@ -135,7 +135,7 @@ foreach ($eqLogics as $eqLogic) {
                       foreach ((jeeObject::buildTree (null, false)) as $object) {
                         $options .= '<option value="' . $object->getId() . '">' . str_repeat('&nbsp;&nbsp;', $object->getConfiguration('parentNumber')) . $object->getName() . '</option>';
                       }
-                      echo $ options;
+                      echo $options;
                       ?>
                     </select>
                </div>
