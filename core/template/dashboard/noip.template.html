@@ -1,0 +1,41 @@
+<div class="eqLogic eqLogic-widget allowResize #eqType#" style="width:#width#;height:#height#;#style#" data-eqLogic_id="#id#" data-eqLogic_uid="#uid#" data-version="#version#" data-eqType="#eqType#" data-translate-category="#translate_category#" data-category="#category#" data-tags="#tags#" >
+	<center class="widget-name">
+		<span class="warning" title="#alert_name#">
+			<i class='#alert_icon#'></i>
+		</span>
+        <span class="cmd refresh pull-right cursor" data-cmd_id="#refresh_id#">
+			<i class="fas fa-sync"></i>
+		</span>
+		<span class="reportModeVisible">#name_display# <span class="object_name">#object_name#</span></span>
+		<a href="#eqLink#" class="reportModeHidden">#name_display# <span class="object_name">#object_name#</span></a>
+	</center>   
+    <div>
+		<center>
+            <table style="width: 90%;">
+                <tr>
+                    <th style="width: 50%;">Domaine</th>
+                    <th style="width: 25%;">Expire dans</th>
+                    <th style="width: 15%;">Status</th>
+                </tr>
+                #domains#
+            </table>
+		</center>
+	</div>
+    <div style="text-align: right;">
+        <center>
+            <br/>
+            Prochaine vérification automatique : 
+            <br/>
+            <i>#nextcheck#</i>
+        </center>
+    </div>
+    <script>    
+        if ('#refresh_id#' != ''){
+			$('.eqLogic[data-eqLogic_uid=#uid#] .refresh').on('click', function () {
+				jeedom.cmd.execute({id: '#refresh_id#'});
+			});
+		}else{
+			$('.eqLogic[data-eqLogic_uid=#uid#] .refresh').remove();
+		}
+    </script> 
+</div>
