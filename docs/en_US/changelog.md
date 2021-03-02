@@ -4,6 +4,9 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 02/03/2021
+- Fix on mode debug/info
+
 # 21/02/2021
 - Colored status icons
 
