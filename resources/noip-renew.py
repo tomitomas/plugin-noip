@@ -79,8 +79,8 @@ class Robot:
         #ele_pwd.send_keys(base64.b64decode(self.password).decode('utf-8'))
         ele_pwd.send_keys(self.password)
         self.browser.find_element_by_name("Login").click()
+        time.sleep(1)
         if self.debug > 1:
-            time.sleep(1)
             self.browser.save_screenshot("/var/www/html/plugins/noip/data/debug2.png")
 
     def update_hosts(self):
@@ -207,7 +207,7 @@ def get_args_values(argv):
     debug = 1
     if len(argv) > 5:
         debug = int(argv[5])
-    return noip_username, noip_password, noip_threshold, noip_renew, 2
+    return noip_username, noip_password, noip_threshold, noip_renew, debug
 
 
 if __name__ == "__main__":
