@@ -56,7 +56,7 @@ class noip extends eqLogic {
 
 	public static function createDomain($domain, $login) {
 		$eqLogicClient = new noip();
-		$defaultRoom = intval(config::byKey('defaultParentObject','noip','',true));
+		$defaultRoom = intval(config::byKey('parentObject','mybin','',true));
 		$name = '';
         if(self::nameExists($domain->hostname)) {
             $name = $domain->hostname.'_'.time();
@@ -257,7 +257,7 @@ class noip extends eqLogic {
             log::add(__CLASS__, 'error', $this->getHumanName() . ' JSON decode impossible');
             return null;
         }
-        if (isset($obj->msg)) {
+        if (isset($json_a->msg)) {
             log::add(__CLASS__, 'error', $eqLogic->getHumanName() . ' error while executing Python script: ' . $obj->message);
             return null;
         } 
