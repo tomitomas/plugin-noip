@@ -47,9 +47,11 @@ if (!isConnect('admin')) {
 			<select id="sel_object" class="configKey form-control" data-l1key="defaultParentObject">
 			  <option value="">{{Aucune}}</option>
 			  <?php
-				foreach (jeeObject::all() as $object) {
-				  echo '<option value="' . $object->getId() . '">' . $object->getName() . '</option>';
+				$options = '';
+				foreach ((jeeObject::buildTree (null, false)) as $object) {
+					$options .= '<option value="' . $object->getId() . '">' . str_repeat('&nbsp;&nbsp;', $object->getConfiguration('parentNumber')) . $object->getName() . '</option>';
 				}
+				echo $options;
 			  ?>
 			</select>
 		  </div>
