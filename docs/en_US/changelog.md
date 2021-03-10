@@ -4,6 +4,9 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 10/03/2021
+- Indented parents list in configuration panel
+
 # 02/03/2021
 - Fix on mode debug/info
 
