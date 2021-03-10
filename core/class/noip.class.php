@@ -56,7 +56,7 @@ class noip extends eqLogic {
 
 	public static function createDomain($domain, $login) {
 		$eqLogicClient = new noip();
-		$defaultRoom = intval(config::byKey('parentObject','mybin','',true));
+		$defaultRoom = intval(config::byKey('parentObject','noip','',true));
 		$name = '';
         if(self::nameExists($domain->hostname)) {
             $name = $domain->hostname.'_'.time();
