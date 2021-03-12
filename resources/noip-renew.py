@@ -190,8 +190,8 @@ class Robot:
 
 
 def main(argv=None):
-    noip_username, noip_password, noip_threshold, noip_renew, debug,  = get_args_values(argv)
-    return (Robot(noip_username, noip_password, noip_threshold, noip_renew, debug)).run()
+    noip_username, noip_password, noip_threshold, noip_renew, noip_rootpath, debug,  = get_args_values(argv)
+    return (Robot(noip_username, noip_password, noip_threshold, noip_renew, noip_rootpath, debug)).run()
 
 
 def get_args_values(argv):
