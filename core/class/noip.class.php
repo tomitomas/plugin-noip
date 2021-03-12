@@ -241,8 +241,8 @@ class noip extends eqLogic {
            $loglevel = 2; 
         }
 
-        $cmd = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "' . $password . '" ' . config::byKey('renewThreshold','noip',7) . ' ' . $renew . ' ' . $loglevel;
-		$cmdInfo = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "#####" ' . config::byKey('renewThreshold','noip',7) . ' ' . $renew . ' ' . $loglevel;
+        $cmd = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "' . $password . '" ' . config::byKey('renewThreshold','noip',7) . ' ' . $renew . ' ' . $noip_path . ' ' . $loglevel;
+		$cmdInfo = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "#####" ' . config::byKey('renewThreshold','noip',7) . ' ' . $renew . ' ' . $noip_path . ' ' . $loglevel;
 		log::add(__CLASS__, 'info', 'Lancement script No-Ip : ' . $cmdInfo);
 		
         exec($cmd . ' >> ' . log::getPathToLog('noip') . ' 2>&1'); 

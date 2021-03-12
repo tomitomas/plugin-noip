@@ -41,12 +41,13 @@ class Robot:
     LOGIN_URL = "https://www.noip.com/login"
     HOST_URL = "https://my.noip.com/#!/dynamic-dns"
 
-    def __init__(self, username, password, threshold, renew, debug):
+    def __init__(self, username, password, threshold, renew, rootpath, debug):
         self.debug = debug
         self.username = username
         self.password = password
         self.threshold = threshold
         self.renew = renew
+        self.rootpath = rootpath
         self.browser = self.init_browser()
         self.logger = Logger(debug)
         self.data = []
@@ -70,7 +71,7 @@ class Robot:
         self.logger.log("Opening {LOGIN_URL}...".format(LOGIN_URL=Robot.LOGIN_URL))
         self.browser.get(Robot.LOGIN_URL)
         if self.debug > 1:
-            self.browser.save_screenshot("/var/www/html/plugins/noip/data/debug1.png")
+            self.browser.save_screenshot(self.rootpath + "/data/debug1.png")
 
         self.logger.log("Logging in...")
         ele_usr = self.browser.find_element_by_name("username")
@@ -81,7 +82,7 @@ class Robot:
         self.browser.find_element_by_name("Login").click()
         time.sleep(1)
         if self.debug > 1:
-            self.browser.save_screenshot("/var/www/html/plugins/noip/data/debug2.png")
+            self.browser.save_screenshot(self.rootpath + "/data/debug2.png")
 
     def update_hosts(self):
         count = 0
@@ -107,7 +108,7 @@ class Robot:
                 count += 1
             iteration += 1
             self.data.append({'hostname':host_name, 'expirationdays':expiration_days, 'renewed':renewed})
-        self.browser.save_screenshot("/var/www/html/plugins/noip/data/results.png")
+        self.browser.save_screenshot(self.rootpath + "/data/results.png")
         self.logger.log("Confirmed hosts: {count}".format(count=str(count)))
         return True
 
@@ -116,7 +117,7 @@ class Robot:
         try:
             self.browser.get(Robot.HOST_URL)
         except TimeoutException as e:
-            self.browser.save_screenshot("/var/www/html/plugins/noip/data/timeout.png")
+            self.browser.save_screenshot(self.rootpath + "/data/timeout.png")
             self.logger.log("Timeout: {e}".format(e=str(e)))
 
     def update_host(self, host_button, host_name):
@@ -132,11 +133,11 @@ class Robot:
 
         if intervention:
             if self.debug > 1:
-                self.browser.save_screenshot("/var/www/html/plugins/noip/data/intervention.png")
+                self.browser.save_screenshot(self.rootpath + "/data/intervention.png")
             self.logger.log("{host_name} requires manual intervention for update".format(host_name=host_name,))
             return "error"
         else:
-            self.browser.save_screenshot("/var/www/html/plugins/noip/data/{host_name}_success.png".format(host_name=host_name))
+            self.browser.save_screenshot(self.rootpath + "/data/{host_name}_success.png".format(host_name=host_name))
             return "ok"       
 
     @staticmethod
@@ -165,7 +166,7 @@ class Robot:
         if len(host_tds) == 0:
             raise Exception("No hosts or host table rows not found")
         if self.debug > 1:
-            self.browser.save_screenshot("/var/www/html/plugins/noip/data/debug3.png")
+            self.browser.save_screenshot(self.rootpath + "/data/debug3.png")
         return host_tds
 
     def run(self):
@@ -177,12 +178,12 @@ class Robot:
                 rc = 3
         except Exception as e:
             self.logger.log(str(e))
-            self.browser.save_screenshot("/var/www/html/plugins/noip/data/exception.png")
+            self.browser.save_screenshot(self.rootpath + "/data/exception.png")
             self.data = {'msg':str(e)}
             rc = 2
         finally:
             self.browser.quit()
-            myfile = open("/var/www/html/plugins/noip/data/output.json", "w")
+            myfile = open(self.rootpath + "/data/output.json", "w")
             json.dump(self.data, myfile)
             myfile.close()
         return rc
@@ -197,17 +198,18 @@ def get_args_values(argv):
     if argv is None:
         argv = sys.argv
     if len(argv) < 3:
-        print("Usage: <noip_username> <noip_password> <threshold> <renew> [<debug-level>]")
+        print("Usage: <noip_username> <noip_password> <threshold> <renew> <rootpath> [<debug-level>]")
         sys.exit(1)
 
     noip_username = argv[1]
     noip_password = argv[2]
     noip_threshold = int(argv[3])
     noip_renew = int(argv[4])
+    noip_rootpath = argv[5]
     debug = 1
-    if len(argv) > 5:
-        debug = int(argv[5])
-    return noip_username, noip_password, noip_threshold, noip_renew, debug
+    if len(argv) > 6:
+        debug = int(argv[6])
+    return noip_username, noip_password, noip_threshold, noip_renew, noip_rootpath, debug
 
 
 if __name__ == "__main__":
