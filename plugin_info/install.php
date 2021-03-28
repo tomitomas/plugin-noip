@@ -44,6 +44,20 @@ function noip_update() {
     if (empty($threshold)) {
         config::save('renewThreshold', 7, 'noip');
     }
+	$cron = cron::byClassAndFunction('noip', 'autoCheck');
+	if (is_object($cron)) {
+		$randMinute = rand(3, 59);
+		$randHour = rand(2, 22);
+		$cronExpr = $randMinute . ' ' . $randHour . ' * * *';
+		$cron->setSchedule($cronExpr);
+		$cron->save();
+	}
+	foreach (eqLogic::byType('noip') as $eqLogic) {
+		if ($eqLogic->getConfiguration('type') == 'account') {
+			$eqLogic->checkAndUpdateCmd('nextcheck', $cron->getNextRunDate());
+			log::add('noip', 'debug', "Prochaine vérification automatique pour ".$eqLogic->getName()." : ". $cron->getNextRunDate());
+		}
+	}
 }
 
 function noip_remove() {

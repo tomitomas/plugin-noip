@@ -258,7 +258,7 @@ class noip extends eqLogic {
             return null;
         }
         if (isset($json_a->msg)) {
-            log::add(__CLASS__, 'error', $eqLogic->getHumanName() . ' error while executing Python script: ' . $obj->message);
+            log::add(__CLASS__, 'error', $this->getHumanName() . ' error while executing Python script: ' . $obj->message);
             return null;
         } 
         return $json_a;
@@ -266,7 +266,9 @@ class noip extends eqLogic {
 
 	public function refreshInfo($renew) {
 		$obj = $this->executeNoIpScript($this->getConfiguration('login'), $this->getConfiguration('password'), $renew);
-        $this->recordData($obj);
+        if (!is_null($obj)) {
+            $this->recordData($obj);
+        }
 	}
     
     public function recordData($obj) {

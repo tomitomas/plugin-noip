@@ -80,7 +80,7 @@ class Robot:
         #ele_pwd.send_keys(base64.b64decode(self.password).decode('utf-8'))
         ele_pwd.send_keys(self.password)
         self.browser.find_element_by_name("Login").click()
-        time.sleep(1)
+        time.sleep(3)
         if self.debug > 1:
             self.browser.save_screenshot(self.rootpath + "/data/debug2.png")
 
@@ -88,7 +88,7 @@ class Robot:
         count = 0
 
         self.open_hosts_page()
-        time.sleep(1)
+        time.sleep(3)
         iteration = 1
 
         hosts = self.get_hosts()
