@@ -6,8 +6,6 @@
 
 # 28/03/2021
 - Meilleur contrôle d'erreur
-
-# 12/03/2021
 - Support des insallations Jeedom non-standard
 
 # 10/03/2021

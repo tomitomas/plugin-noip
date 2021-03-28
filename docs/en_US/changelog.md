@@ -6,8 +6,6 @@
 
 # 28/03/2021
 - Better error control
-
-# 12/03/2021
 - Non standard jeedom installations support
 
 # 10/03/2021
