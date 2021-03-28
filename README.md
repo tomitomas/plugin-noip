@@ -3,6 +3,10 @@ This is a plugin for Jeedom aimed at automatically renewing your free no-ip.com 
 
 This implies to have a free no-ip.com account and a proper local Jeedom installation.
 
+You like this plugin? You can, if you wish, encourage its developer:
+
+[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/paypalme/hugoKs3)
+
 # Credits
 This plugin has been inspired by the work done by:
 - [loblab](https://github.com/loblab) through his Python script to interact with no-ip.com website: [noip-renew](https://github.com/loblab/noip-renew)
