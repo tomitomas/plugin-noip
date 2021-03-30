@@ -3,10 +3,6 @@
 This plugin allows to automatically renew your free no-ip.com hostnames.
 Such hostnames expire every 30 days if not renewed 7 days before expiration date.
 
-You like this plugin? You can, if you wish, encourage its developer:
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/paypalme/hugoKs3)
-
 # Installation
 
 The plugin relies on a [Python script](https://github.com/loblab/noip-renew) developed by [loblab](https://github.com/loblab) and adapted for Jeedom.
