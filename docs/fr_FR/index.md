@@ -3,10 +3,6 @@
 Ce plugin permet de renouveler automatiquement vos noms domaine gratuits no-ip.com.
 Ces domaines expirent tous les 30 jours et sont définitivement supprimés si ils ne sont pas renouvelés à temps.
 
-Ce plugin vous plait ? Vous pouvez, si vous le souhaitez, encourager son développeur :
-
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/paypalme/hugoKs3)
-
 # Installation
 
 Ce plugin se repose sur un [script Python](https://github.com/loblab/noip-renew) développé par [loblab](https://github.com/loblab) et adapté pour Jeedom.
