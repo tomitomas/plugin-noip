@@ -79,8 +79,8 @@ class Robot:
         ele_usr.send_keys(self.username)
         #ele_pwd.send_keys(base64.b64decode(self.password).decode('utf-8'))
         ele_pwd.send_keys(self.password)
-        self.browser.find_element_by_name("Login").click()
-        self.find_element_by_xpath('//button[@data-action="login"]').click()
+        #self.browser.find_element_by_name("Login").click()
+        self.browser.find_element_by_xpath('//button[@data-action="login"]').click()
         time.sleep(3)
         if self.debug > 1:
             self.browser.save_screenshot(self.rootpath + "/data/debug2.png")
