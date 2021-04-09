@@ -84,14 +84,19 @@ class Robot:
             ele_button = self.browser.find_element_by_name("Login")
         except NoSuchElementException as e:
             self.logger.log("Element by name login not found: {e}".format(e=str(e)))
-        try:
-            ele_button = self.browser.find_element_by_xpath('//button[@data-action="login"]')
-        except NoSuchElementException as e:
-            self.logger.log("Element by attr data-action=login not found: {e}".format(e=str(e)))           
-        ele_button.click()
-        time.sleep(3)
-        if self.debug > 1:
-            self.browser.save_screenshot(self.rootpath + "/data/debug2.png")
+        if ele_button == None:
+            self.logger.log("Element by name login not found, try by xpath")
+            try:
+                ele_button = self.browser.find_element_by_xpath('//button[@data-action="login"]')
+            except NoSuchElementException as e:
+                self.logger.log("Element by attr data-action=login not found: {e}".format(e=str(e)))           
+        if ele_button != None:
+            ele_button.click()
+            time.sleep(3)
+            if self.debug > 1:
+                self.browser.save_screenshot(self.rootpath + "/data/debug2.png")
+        else:
+            raise Exception('Login button not found')
 
     def update_hosts(self):
         count = 0
