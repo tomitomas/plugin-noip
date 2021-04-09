@@ -4,6 +4,9 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 09/04/2021
+- Adaptation to new website layout
+
 # 28/03/2021
 - Better error control
 - Non standard jeedom installations support
