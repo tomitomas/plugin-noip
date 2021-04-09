@@ -79,8 +79,16 @@ class Robot:
         ele_usr.send_keys(self.username)
         #ele_pwd.send_keys(base64.b64decode(self.password).decode('utf-8'))
         ele_pwd.send_keys(self.password)
-        #self.browser.find_element_by_name("Login").click()
-        self.browser.find_element_by_xpath('//button[@data-action="login"]').click()
+        ele_button = None
+        try:
+            ele_button = self.browser.find_element_by_name("Login")
+        except NoSuchElementException as e:
+            self.logger.log("Element by name login not found: {e}".format(e=str(e)))
+        try:
+            ele_button = self.browser.find_element_by_xpath('//button[@data-action="login"]')
+        except NoSuchElementException as e:
+            self.logger.log("Element by attr data-action=login not found: {e}".format(e=str(e)))           
+        ele_button.click()
         time.sleep(3)
         if self.debug > 1:
             self.browser.save_screenshot(self.rootpath + "/data/debug2.png")
