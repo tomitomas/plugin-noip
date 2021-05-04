@@ -92,8 +92,17 @@ class Robot:
         if button_found == False:
             try:
                 self.browser.find_element_by_xpath('//button[@data-action="login"]').click()
+                button_found = True
             except Exception as e:
-                self.logger.log("ERROR: Element by attr data-action=login not found: {e}".format(e=str(e))) 
+                if self.debug > 1:
+                    self.logger.log("DEBUG: Element by attr data-action=login not found: {e}".format(e=str(e))) 
+
+        if button_found == False:
+            try:
+                self.browser.find_element_by_xpath('//button[@id="clogs-captcha-button"]').click()
+                button_found = True
+            except Exception as e:
+                self.logger.log("ERROR: Element by attr id=clogs-captcha-button not found: {e}".format(e=str(e))) 
                 raise Exception('Login button not found')
 
         time.sleep(3)
