@@ -4,6 +4,9 @@
 >
 >As a reminder if there is no information on the update, it means that it only concerns the updating of documentation, translation or text.
 
+# 15/08/2021
+- Adaptation to new website layout
+
 # 04/05/2021
 - Fix login issue
 
