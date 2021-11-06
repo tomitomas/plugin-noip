@@ -124,7 +124,7 @@ class Robot:
             expiration_days = self.get_host_expiration_days(host, iteration)
             self.logger.log("{host_name} expires in {expiration_days} days".format(host_name=host_name,expiration_days=str(expiration_days)))
             renewed = "ok"
-            if expiration_days < 7:
+            if expiration_days <= 7:
                 renewed = "warning"
             if self.renew > 0 and expiration_days < self.threshold:
                 renewed = self.update_host(host_button, host_name)
@@ -168,12 +168,15 @@ class Robot:
     @staticmethod
     def get_host_expiration_days(host, iteration):
         try:
-            host_remaining_days = host.find_element_by_xpath(".//a[@class='no-link-style']").text
+            host_remaining_days = host.find_element_by_xpath(".//a[@class='no-link-style']").get_attribute("title")
         except:
             host_remaining_days = "Expires in 0 days"
             pass
         regex_match = re.search("\\d+", host_remaining_days)
         if regex_match is None:
+            host_remaining_days = host.find_element_by_xpath(".//a[@class='no-link-style']").text
+        regex_match = re.search("\\d+", host_remaining_days)
+        if regex_match is None:    
             raise Exception("Expiration days label does not match the expected pattern")
         expiration_days = int(regex_match.group(0))
         return expiration_days
