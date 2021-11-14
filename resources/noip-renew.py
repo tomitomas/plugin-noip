@@ -122,7 +122,7 @@ class Robot:
             host_button = self.get_host_button(host, iteration) # This is the button to confirm our free host
             host_name = host_link.text
             if self.debug > 1:
-                self.logger.log("Dealing with {host_name}") 
+                self.logger.log("Dealing with {host_name}".format(host_name=host_name)) 
             expiration_days = self.get_host_expiration_days(host, iteration)
             self.logger.log("{host_name} expires in {expiration_days} days".format(host_name=host_name,expiration_days=str(expiration_days)))
             renewed = "ok"
