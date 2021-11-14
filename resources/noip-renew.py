@@ -131,7 +131,7 @@ class Robot:
             if self.renew > 0 and expiration_days < self.threshold:
                 renewed = self.update_host(host_button, host_name)
                 if renewed == "ok":
-                    expiration_days = self.get_host_expiration_days(host, iteration)
+                    expiration_days = self.get_host_expiration_days(self, host, iteration)
                 count += 1
             iteration += 1
             self.data.append({'hostname':host_name, 'expirationdays':expiration_days, 'renewed':renewed})
