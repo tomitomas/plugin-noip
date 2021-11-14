@@ -123,7 +123,7 @@ class Robot:
             host_name = host_link.text
             if self.debug > 1:
                 self.logger.log("Dealing with {host_name}".format(host_name=host_name)) 
-            expiration_days = self.get_host_expiration_days(host, iteration)
+            expiration_days = self.get_host_expiration_days(self, host, iteration)
             self.logger.log("{host_name} expires in {expiration_days} days".format(host_name=host_name,expiration_days=str(expiration_days)))
             renewed = "ok"
             if expiration_days <= 7:
@@ -168,9 +168,11 @@ class Robot:
             return "ok"       
 
     @staticmethod
-    def get_host_expiration_days(host, iteration):
+    def get_host_expiration_days(self, host, iteration):
         try:
             host_remaining_days = host.find_element_by_xpath(".//a[@class='no-link-style']").get_attribute("data-original-title")
+            if self.debug > 1:
+                self.logger.log("host remining days found: {days}".format(days=str(host_remaining_days))) 
         except:
             host_remaining_days = "Expires in 0 days"
             pass
