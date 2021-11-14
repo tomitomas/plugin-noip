@@ -121,7 +121,9 @@ class Robot:
             host_link = self.get_host_link(host, iteration) # This is for if we wanted to modify our Host IP.
             host_button = self.get_host_button(host, iteration) # This is the button to confirm our free host
             host_name = host_link.text
-            expiration_days = self.get_host_expiration_days(host, iteration)
+            if self.debug > 1:
+                self.logger.log("Dealing with {host_name}".format(host_name=host_name)) 
+            expiration_days = self.get_host_expiration_days(self, host, iteration)
             self.logger.log("{host_name} expires in {expiration_days} days".format(host_name=host_name,expiration_days=str(expiration_days)))
             renewed = "ok"
             if expiration_days <= 7:
@@ -129,7 +131,7 @@ class Robot:
             if self.renew > 0 and expiration_days < self.threshold:
                 renewed = self.update_host(host_button, host_name)
                 if renewed == "ok":
-                    expiration_days = self.get_host_expiration_days(host, iteration)
+                    expiration_days = self.get_host_expiration_days(self, host, iteration)
                 count += 1
             iteration += 1
             self.data.append({'hostname':host_name, 'expirationdays':expiration_days, 'renewed':renewed})
@@ -166,16 +168,20 @@ class Robot:
             return "ok"       
 
     @staticmethod
-    def get_host_expiration_days(host, iteration):
+    def get_host_expiration_days(self, host, iteration):
         try:
-            host_remaining_days = host.find_element_by_xpath(".//a[@class='no-link-style']").get_attribute("title")
+            host_remaining_days = host.find_element_by_xpath(".//a[contains(@class,'no-link-style')]").get_attribute("data-original-title")
+            if host_remaining_days is None:
+                host_remaining_days = host.find_element_by_xpath(".//a[contains(@class,'no-link-style')]").text
+            if self.debug > 1:
+                self.logger.log("host remaining days found: {days}".format(days=str(host_remaining_days))) 
         except:
             host_remaining_days = "Expires in 0 days"
             pass
         regex_match = re.search("\\d+", host_remaining_days)
-        if regex_match is None:
-            host_remaining_days = host.find_element_by_xpath(".//a[@class='no-link-style']").text
-        regex_match = re.search("\\d+", host_remaining_days)
+        #if regex_match is None:
+        #    host_remaining_days = host.find_element_by_xpath(".//a[@class='no-link-style']").text
+        #regex_match = re.search("\\d+", host_remaining_days)
         if regex_match is None:    
             raise Exception("Expiration days label does not match the expected pattern")
         expiration_days = int(regex_match.group(0))
@@ -190,6 +196,8 @@ class Robot:
         return host.find_element_by_xpath(".//following-sibling::td[4]/button[contains(@class, 'btn')]")
 
     def get_hosts(self):
+        if self.debug > 1:
+            self.logger.log("Getting hosts list...") 
         host_tds = self.browser.find_elements_by_xpath("//td[@data-title=\"Host\"]")
         if len(host_tds) == 0:
             raise Exception("No hosts or host table rows not found")
