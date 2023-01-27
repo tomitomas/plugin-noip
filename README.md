@@ -1,3 +1,6 @@
+> **Warning**
+> This plugin is no longer maintained
+
 # plugin-noip
 This is a plugin for Jeedom aimed at automatically renewing your free no-ip.com hostname (that need to be renewed every 30 days). 
 
