@@ -24,7 +24,7 @@ try {
 		throw new \Exception('401 Unauthorized');
 	}
 
-	switch (init('action')){
+	switch (init('action')) {
 		case 'syncNoIp':
 			if (!isConnect('admin')) {
 				throw new \Exception('401 Unauthorized');

@@ -27,34 +27,34 @@ if (!isConnect('admin')) {
 		<legend>
 			<i class="fa fa-list-alt"></i> {{Paramètres}}
 		</legend>
-        <div class="form-group">
+		<div class="form-group">
 			<label class="col-sm-4 control-label">{{Renouveler les noms de domaine quand ceux-ci arrivent à expiration dans : }}</label>
 			<div class="col-sm-2">
-                <select id="sel_days" class="configKey form-control" data-l1key="renewThreshold">
-                    <option value="7">7 {{jours}}</option>
-                    <option value="6">6 {{jours}}</option>
-                    <option value="5">5 {{jours}}</option>
-                    <option value="4">4 {{jours}}</option>
-                    <option value="3">3 {{jours}}</option>
-                    <option value="2">2 {{jours}}</option>
-                    <option value="1">1 {{jour}}</option>
-                </select>
+				<select id="sel_days" class="configKey form-control" data-l1key="renewThreshold">
+					<option value="7">7 {{jours}}</option>
+					<option value="6">6 {{jours}}</option>
+					<option value="5">5 {{jours}}</option>
+					<option value="4">4 {{jours}}</option>
+					<option value="3">3 {{jours}}</option>
+					<option value="2">2 {{jours}}</option>
+					<option value="1">1 {{jour}}</option>
+				</select>
 			</div>
 		</div>
-        <div class="form-group">
-		  <label class="col-lg-4 control-label" >{{Pièce par défaut pour les nouveaux domaines}}</label>
-		  <div class="col-lg-3">
-			<select id="sel_object" class="configKey form-control" data-l1key="defaultParentObject">
-			  <option value="">{{Aucune}}</option>
-			  <?php
-				$options = '';
-				foreach ((jeeObject::buildTree (null, false)) as $object) {
-					$options .= '<option value="' . $object->getId() . '">' . str_repeat('&nbsp;&nbsp;', $object->getConfiguration('parentNumber')) . $object->getName() . '</option>';
-				}
-				echo $options;
-			  ?>
-			</select>
-		  </div>
+		<div class="form-group">
+			<label class="col-lg-4 control-label">{{Pièce par défaut pour les nouveaux domaines}}</label>
+			<div class="col-lg-3">
+				<select id="sel_object" class="configKey form-control" data-l1key="defaultParentObject">
+					<option value="">{{Aucune}}</option>
+					<?php
+					$options = '';
+					foreach ((jeeObject::buildTree(null, false)) as $object) {
+						$options .= '<option value="' . $object->getId() . '">' . str_repeat('&nbsp;&nbsp;', $object->getConfiguration('parentNumber')) . $object->getName() . '</option>';
+					}
+					echo $options;
+					?>
+				</select>
+			</div>
 		</div>
 	</fieldset>
 </form>

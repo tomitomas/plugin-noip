@@ -7,17 +7,19 @@
     },
     "utilization": "Ajoutez un compte no-ip.com , puis cliquez sur Scanner pour récupérer vos noms de domaines.",
     "licence": "AGPL",
-    "author": "hugoKs3",
+    "author": "tomitomas",
     "require": "4.0.62",
     "category": "monitoring",
     "hasDependency": true,
     "hasOwnDeamon": false,
     "maxDependancyInstallTime": 45,
-    "changelog": "https:\/\/hugoks3.github.io\/plugin-noip\/#language#\/changelog",
-    "documentation": "https:\/\/hugoks3.github.io\/plugin-noip\/#language#\/",
-    "link" : {
-		"forum":"https://community.jeedom.com/t/nouveau-plugin-no-ip-renew/49829"
-	},
+    "changelog": "https://tomitomas.github.io/jeedom_doc/NoIp/fr_FR/changelog",
+    "changelog_beta": "https://tomitomas.github.io/jeedom_doc/NoIp/fr_FR/changelog_beta",
+    "documentation": "https://tomitomas.github.io/jeedom_doc/NoIp/fr_FR/",
+    "documentation_beta": "https://tomitomas.github.io/jeedom_doc/NoIp/fr_FR/",
+    "link": {
+        "forum": "https://community.jeedom.com/t/plugin-noip-actualites/102075"
+    },
     "language": [
         "fr_FR",
         "en_US"

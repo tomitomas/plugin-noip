@@ -67,4 +67,3 @@ function noip_remove() {
 		$cron->remove();
 	}
 }
-?>
