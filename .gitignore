@@ -1,0 +1,9 @@
+test.php
+
+.project
+.DS_Store
+Thumbs.db
+*.php~
+
+.vscode/
+test/
