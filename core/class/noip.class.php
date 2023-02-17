@@ -80,6 +80,7 @@ class noip extends eqLogic {
     public static function syncNoIp() {
         log::add('noip', 'info', "syncNoIp");
 
+        /** @var noip $eqLogic */
         $eqLogics = eqLogic::byType('noip');
         foreach ($eqLogics as $eqLogic) {
             if ($eqLogic->getConfiguration('type', '') != 'account' || $eqLogic->getIsEnable() != 1) {
@@ -159,6 +160,18 @@ class noip extends eqLogic {
                     $cmd->setType('info');
                     $cmd->setSubType('string');
                     $cmd->setGeneric_type('GENERIC_INFO');
+                    $cmd->setIsVisible(1);
+                    $cmd->save();
+                }
+                $cmd = $this->getCmd(null, 'endDate');
+                if (!is_object($cmd)) {
+                    $cmd = new noipCmd();
+                    $cmd->setName('Expiration date');
+                    $cmd->setEqLogic_id($this->getId());
+                    $cmd->setLogicalId('endDate');
+                    $cmd->setType('info');
+                    $cmd->setSubType('string');
+                    $cmd->setIsHistorized(0);
                     $cmd->setIsVisible(1);
                     $cmd->save();
                 }
@@ -285,6 +298,8 @@ class noip extends eqLogic {
                     $existingDomain->checkAndUpdateCmd('hostname', $domain->hostname);
                     $existingDomain->checkAndUpdateCmd('expiration', $domain->expirationdays);
                     $existingDomain->checkAndUpdateCmd('renew', $domain->renewed);
+                    $endDate = date('d/m/Y', strtotime($domain->expirationdays . " days"));
+                    $existingDomain->checkAndUpdateCmd('endDate', $endDate);
                 }
             }
         }
