@@ -18,9 +18,10 @@
 
 /* * ***************************Includes********************************* */
 require_once __DIR__ . '/../../../../core/php/core.inc.php';
+require_once __DIR__ . '/../../3rdparty/autoload.php';
 
 class noip extends eqLogic {
-
+    use tomitomasEqLogicTrait;
 
     /* * *************************Attributs****************************** */
 
@@ -41,7 +42,7 @@ class noip extends eqLogic {
         foreach (self::byType('noip') as $eqLogic) {
             if ($eqLogic->getConfiguration('type') == 'account') {
                 $eqLogic->checkAndUpdateCmd('nextcheck', $cron->getNextRunDate());
-                log::add('noip', 'debug', "Prochaine vérification automatique pour " . $eqLogic->getName() . " : " . $cron->getNextRunDate());
+                self::debug("Prochaine vérification automatique pour " . $eqLogic->getName() . " : " . $cron->getNextRunDate());
             }
         }
     }
@@ -60,11 +61,11 @@ class noip extends eqLogic {
         $name = '';
         if (self::nameExists($domain->hostname)) {
             $name = $domain->hostname . '_' . time();
-            log::add('noip', 'debug', "Nom en double " . $domain->hostname . " renommé en " . $name);
+            self::debug("Nom en double " . $domain->hostname . " renommé en " . $name);
         } else {
             $name = $domain->hostname;
         }
-        log::add('noip', 'info', "Domaine créé : " . $name);
+        self::info("Domaine créé : " . $name);
         $eqLogicClient->setName($name);
         $eqLogicClient->setIsEnable(1);
         $eqLogicClient->setIsVisible(0);
@@ -78,7 +79,7 @@ class noip extends eqLogic {
     }
 
     public static function syncNoIp() {
-        log::add('noip', 'info', "syncNoIp");
+        self::info("syncNoIp");
 
         /** @var noip $eqLogic */
         $eqLogics = eqLogic::byType('noip');
@@ -257,22 +258,22 @@ class noip extends eqLogic {
 
         $cmd = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "' . $password . '" ' . config::byKey('renewThreshold', 'noip', 7) . ' ' . $renew . ' ' . $noip_path . ' ' . $loglevel;
         $cmdInfo = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "#####" ' . config::byKey('renewThreshold', 'noip', 7) . ' ' . $renew . ' ' . $noip_path . ' ' . $loglevel;
-        log::add(__CLASS__, 'info', 'Lancement script No-Ip : ' . $cmdInfo);
+        self::info('Lancement script No-Ip : ' . $cmdInfo);
 
         exec($cmd . ' >> ' . log::getPathToLog('noip') . ' 2>&1');
         $string = file_get_contents($noip_path . '/data/output.json');
-        log::add(__CLASS__, 'debug', $this->getHumanName() . ' file content: ' . $string);
+        self::debug($this->getHumanName() . ' file content: ' . $string);
         if ($string === false) {
-            log::add(__CLASS__, 'error', $this->getHumanName() . ' file content empty');
+            self::error($this->getHumanName() . ' file content empty');
             return null;
         }
         $json_a = json_decode($string);
         if ($json_a === null) {
-            log::add(__CLASS__, 'error', $this->getHumanName() . ' JSON decode impossible');
+            self::error($this->getHumanName() . ' JSON decode impossible');
             return null;
         }
         if (isset($json_a->msg)) {
-            log::add(__CLASS__, 'error', $this->getHumanName() . ' error while executing Python script: ' . $json_a->msg);
+            self::error($this->getHumanName() . ' error while executing Python script: ' . $json_a->msg);
             return null;
         }
         return $json_a;
@@ -377,7 +378,7 @@ class noipCmd extends cmd {
         if (!is_object($eqLogic) || $eqLogic->getIsEnable() != 1) {
             throw new Exception(__('Equipement desactivé impossible d\éxecuter la commande : ' . $this->getHumanName(), __FILE__));
         }
-        log::add('noip', 'debug', 'Execution de la commande ' . $this->getLogicalId());
+        noip::debug('Execution de la commande ' . $this->getLogicalId());
         switch ($this->getLogicalId()) {
             case "refresh":
                 $eqLogic->scan(1);
