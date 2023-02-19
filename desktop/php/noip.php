@@ -25,20 +25,20 @@ foreach ($eqLogics as $eqLogic) {
             <div class="col-sm-10" style="min-height:200px">
                 <legend><i class="fas fa-cog"></i> {{Gestion}}</legend>
                 <div class="eqLogicThumbnailContainer">
-                    <div class="cursor eqLogicAction logoPrimary" data-action="add" title="{{Ajouter un compte No-Ip}}" style="color:rgb(0,25,132);">
-                        <i class="fas fa-plus-circle"></i>
+                    <div class="cursor eqLogicAction logoPrimary" data-action="add" title="{{Ajouter un compte No-Ip}}">
+                        <i class="fas fa-plus-circle" style="color:rgb(0,25,132);"></i>
                         <br>
-                        <span>{{Ajouter}}</span>
+                        <span style="color:var(--txt-color)">{{Ajouter}}</span>
                     </div>
-                    <div class="cursor eqLogicAction logoPrimary" data-action="discover" data-action2="repos" title="{{Scanner les domaines}}" style="color:rgb(0,25,132);">
-                        <i class="fas fa-bullseye"></i>
+                    <div class="cursor eqLogicAction logoPrimary" data-action="discover" data-action2="repos" title="{{Scanner les domaines}}">
+                        <i class="fas fa-bullseye" style="color:rgb(0,25,132);"></i>
                         <br>
-                        <span>{{Scanner}}</span>
+                        <span style="color:var(--txt-color)">{{Scanner}}</span>
                     </div>
                     <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
                         <i class="fas fa-wrench"></i>
                         <br>
-                        <span>{{Configuration}}</span>
+                        <span style="color:var(--txt-color)">{{Configuration}}</span>
                     </div>
                 </div>
             </div>
@@ -46,9 +46,9 @@ foreach ($eqLogics as $eqLogic) {
                 <legend><i class="fas fa-search"></i> {{Debug}}</legend>
                 <div class="eqLogicThumbnailContainer">
                     <div class="cursor eqLogicAction logoSecondary" id="bt_getScreenshot">
-                        <i class="fas fa-bug"></i>
+                        <i class="fas fa-bug" style="color:rgb(0,25,132);"></i>
                         <br>
-                        <span>{{Screenshots}}</span>
+                        <span style="color:var(--txt-color)">{{Screenshots}}</span>
                     </div>
                 </div>
             </div>
