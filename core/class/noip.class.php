@@ -124,83 +124,10 @@ class noip extends eqLogic {
     }
 
     public function postSave() {
-        if ($this->getConfiguration('type', '') == 'domain') {
-            if ($this->getIsEnable()) {
-                $cmd = $this->getCmd(null, 'hostname');
-                if (!is_object($cmd)) {
-                    $cmd = new noipCmd();
-                    $cmd->setName('Hostname');
-                    $cmd->setEqLogic_id($this->getId());
-                    $cmd->setLogicalId('hostname');
-                    $cmd->setType('info');
-                    $cmd->setSubType('string');
-                    $cmd->setGeneric_type('GENERIC_INFO');
-                    $cmd->setIsVisible(1);
-                    $cmd->save();
-                }
-                $cmd = $this->getCmd(null, 'expiration');
-                if (!is_object($cmd)) {
-                    $cmd = new noipCmd();
-                    $cmd->setName('Days before expiration');
-                    $cmd->setEqLogic_id($this->getId());
-                    $cmd->setLogicalId('expiration');
-                    $cmd->setType('info');
-                    $cmd->setSubType('numeric');
-                    $cmd->setIsHistorized(0);
-                    $cmd->setTemplate('dashboard', 'tile');
-                    $cmd->setTemplate('mobile', 'tile');
-                    $cmd->setIsVisible(1);
-                    $cmd->save();
-                }
-                $cmd = $this->getCmd(null, 'renew');
-                if (!is_object($cmd)) {
-                    $cmd = new noipCmd();
-                    $cmd->setName('Renew status');
-                    $cmd->setEqLogic_id($this->getId());
-                    $cmd->setLogicalId('renew');
-                    $cmd->setType('info');
-                    $cmd->setSubType('string');
-                    $cmd->setGeneric_type('GENERIC_INFO');
-                    $cmd->setIsVisible(1);
-                    $cmd->save();
-                }
-                $cmd = $this->getCmd(null, 'endDate');
-                if (!is_object($cmd)) {
-                    $cmd = new noipCmd();
-                    $cmd->setName('Expiration date');
-                    $cmd->setEqLogic_id($this->getId());
-                    $cmd->setLogicalId('endDate');
-                    $cmd->setType('info');
-                    $cmd->setSubType('string');
-                    $cmd->setIsHistorized(0);
-                    $cmd->setIsVisible(1);
-                    $cmd->save();
-                }
-            }
-        } else {
-            $cmd = $this->getCmd(null, 'refresh');
-            if (!is_object($cmd)) {
-                $cmd = new noipCmd();
-                $cmd->setLogicalId('refresh');
-                $cmd->setEqLogic_id($this->getId());
-                $cmd->setName('Rafraichir');
-                $cmd->setType('action');
-                $cmd->setSubType('other');
-                // $cmd->setEventOnly(1);
-                $cmd->save();
-            }
-            $cmd = $this->getCmd(null, 'nextcheck');
-            if (!is_object($cmd)) {
-                $cmd = new noipCmd();
-                $cmd->setName('Next automatic check');
-                $cmd->setEqLogic_id($this->getId());
-                $cmd->setLogicalId('nextcheck');
-                $cmd->setType('info');
-                $cmd->setSubType('string');
-                $cmd->setGeneric_type('GENERIC_INFO');
-                $cmd->setIsVisible(1);
-                $cmd->save();
-            }
+        $type = $this->getConfiguration('type', 'account');
+        $this->createCommands(__DIR__  . '/../config/params.json', $type);
+
+        if ($type == 'account') {
             $cron = cron::byClassAndFunction('noip', 'autoCheck');
             $this->checkAndUpdateCmd('nextcheck', $cron->getNextRunDate());
         }
