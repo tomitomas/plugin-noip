@@ -1,0 +1,45 @@
+{
+    "packages": [
+        {
+            "name": "tomitomas/jeedom-tools",
+            "version": "0.3",
+            "version_normalized": "0.3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tomitomas/jeedom-tools.git",
+                "reference": "8f7d4fe048313088f9105c3814f5148bb9fd0e8d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tomitomas/jeedom-tools/zipball/8f7d4fe048313088f9105c3814f5148bb9fd0e8d",
+                "reference": "8f7d4fe048313088f9105c3814f5148bb9fd0e8d",
+                "shasum": ""
+            },
+            "time": "2023-02-04T22:06:19+00:00",
+            "type": "library",
+            "installation-source": "dist",
+            "autoload": {
+                "psr-0": {
+                    "tomitomasEqLogicTrait": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "ToMitOmAs"
+                }
+            ],
+            "description": "Generic lib for jeedom plugins",
+            "support": {
+                "issues": "https://github.com/tomitomas/jeedom-tools/issues",
+                "source": "https://github.com/tomitomas/jeedom-tools/tree/0.3"
+            },
+            "install-path": "../tomitomas/jeedom-tools"
+        }
+    ],
+    "dev": true,
+    "dev-package-names": []
+}
