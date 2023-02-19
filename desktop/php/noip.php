@@ -21,22 +21,36 @@ foreach ($eqLogics as $eqLogic) {
 
 <div class="row row-overflow">
     <div class="col-xs-12 eqLogicThumbnailDisplay">
-        <legend><i class="fas fa-cog"></i> {{Gestion}}</legend>
-        <div class="eqLogicThumbnailContainer">
-            <div class="cursor eqLogicAction logoPrimary" data-action="add" title="{{Ajouter un compte No-Ip}}">
-                <i class="fas fa-plus-circle"></i>
-                <br>
-                <span>{{Ajouter}}</span>
+        <div class="row">
+            <div class="col-sm-10" style="min-height:200px">
+                <legend><i class="fas fa-cog"></i> {{Gestion}}</legend>
+                <div class="eqLogicThumbnailContainer">
+                    <div class="cursor eqLogicAction logoPrimary" data-action="add" title="{{Ajouter un compte No-Ip}}" style="color:rgb(0,25,132);">
+                        <i class="fas fa-plus-circle"></i>
+                        <br>
+                        <span>{{Ajouter}}</span>
+                    </div>
+                    <div class="cursor eqLogicAction logoPrimary" data-action="discover" data-action2="repos" title="{{Scanner les domaines}}" style="color:rgb(0,25,132);">
+                        <i class="fas fa-bullseye"></i>
+                        <br>
+                        <span>{{Scanner}}</span>
+                    </div>
+                    <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
+                        <i class="fas fa-wrench"></i>
+                        <br>
+                        <span>{{Configuration}}</span>
+                    </div>
+                </div>
             </div>
-            <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
-                <i class="fas fa-wrench"></i>
-                <br>
-                <span>{{Configuration}}</span>
-            </div>
-            <div class="cursor eqLogicAction logoPrimary" data-action="discover" data-action2="repos" title="{{Scanner les domaines}}">
-                <i class="fas fa-bullseye"></i>
-                <br>
-                <span>{{Scanner}}</span>
+            <div class="col-sm-2" style="min-height:200px">
+                <legend><i class="fas fa-search"></i> {{Debug}}</legend>
+                <div class="eqLogicThumbnailContainer">
+                    <div class="cursor eqLogicAction logoSecondary" id="bt_getScreenshot">
+                        <i class="fas fa-bug"></i>
+                        <br>
+                        <span>{{Screenshots}}</span>
+                    </div>
+                </div>
             </div>
         </div>
         <legend><i class="fas fa-table"></i>{{Mes Comptes No-Ip}}

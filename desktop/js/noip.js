@@ -129,3 +129,8 @@ $('.eqLogicAction[data-action=discover]').on('click', function (e) {
 });
 
 $("#table_cmd").sortable({ axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true });
+
+$('#bt_getScreenshot').on('click', function () {
+  $('#md_modal').dialog({ title: "{{Visualisation des screenshots}}" });
+  $('#md_modal').load('index.php?v=d&plugin=noip&modal=noip.screenshots').dialog('open');
+});
