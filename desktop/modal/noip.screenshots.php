@@ -12,7 +12,7 @@ if (!isConnect('admin')) {
         <div>
             <?php
             $allFiles = glob('plugins/noip/data/' . '*');
-            log::add('noip', 'debug', 'all files ===> ' . json_encode($allFiles));
+            // log::add('noip', 'debug', 'all files ===> ' . json_encode($allFiles));
             $outputFilename = 'plugins/noip/data/output.json';
             if (file_exists($outputFilename)) {
                 echo "<a href='" . $outputFilename . "' target='_blank'><span style='color:blue'>Résultat : " . basename($outputFilename) . "</span></a>";
