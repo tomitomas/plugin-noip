@@ -166,14 +166,6 @@ class noip extends eqLogic {
 
     public function executeNoIpScript($login, $password, $renew) {
         $noip_path = dirname(__FILE__) . '/../..';
-        // unlink($noip_path . '/data/output.json');
-        // unlink($noip_path . '/data/debug1.png');
-        // unlink($noip_path . '/data/debug2.png');
-        // unlink($noip_path . '/data/debug3.png');
-        // unlink($noip_path . '/data/results.png');
-        // unlink($noip_path . '/data/intervention.png');
-        // unlink($noip_path . '/data/exception.png');
-        // unlink($noip_path . '/data/timeout.png');
 
         array_map('unlink', glob("$noip_path/data/*.png"));
         array_map('unlink', glob("$noip_path/data/*.json"));
