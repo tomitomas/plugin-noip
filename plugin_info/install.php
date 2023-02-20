@@ -57,6 +57,7 @@ function noip_update() {
 			$eqLogic->checkAndUpdateCmd('nextcheck', $cron->getNextRunDate());
 			noip::debug("Prochaine vérification automatique pour " . $eqLogic->getName() . " : " . $cron->getNextRunDate());
 		}
+		$eqLogic->save();
 	}
 }
 
