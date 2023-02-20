@@ -206,6 +206,9 @@ class noip extends eqLogic {
         $obj = $this->executeNoIpScript($this->getConfiguration('login'), $this->getConfiguration('password'), $renew);
         if (!is_null($obj)) {
             $this->recordData($obj);
+            $this->checkAndUpdateCmd('refreshStatus', 'ok');
+        } else {
+            $this->checkAndUpdateCmd('refreshStatus', 'error');
         }
     }
 

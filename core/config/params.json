@@ -64,6 +64,15 @@
                 "generic_type": "GENERIC_INFO",
                 "isVisible": 1,
                 "order": 2
+            },
+            {
+                "logicalId": "refreshStatus",
+                "name": "Statut",
+                "type": "info",
+                "subtype": "string",
+                "generic_type": "GENERIC_INFO",
+                "isVisible": 1,
+                "order": 3
             }
         ]
     },
