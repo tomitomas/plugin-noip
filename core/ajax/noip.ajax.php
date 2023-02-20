@@ -20,20 +20,18 @@ try {
 	require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
 	include_file('core', 'authentification', 'php');
 
-	if (!isConnect()) {
-		throw new \Exception('401 Unauthorized');
+	if (!isConnect('admin')) {
+		throw new Exception('401 Unauthorized');
 	}
 
 	switch (init('action')) {
 		case 'syncNoIp':
-			if (!isConnect('admin')) {
-				throw new \Exception('401 Unauthorized');
-			}
-			noip::syncNoIp();
+			// exec the fx in a while
+			noip::executeAsync('syncNoIp');
 			ajax::success();
 			break;
 	}
-	throw new \Exception('Aucune méthode correspondante');
-} catch (\Exception $e) {
+	throw new Exception('Aucune méthode correspondante [' . init('action') . ']');
+} catch (Exception $e) {
 	ajax::error(displayException($e), $e->getCode());
 }
