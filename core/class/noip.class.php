@@ -81,14 +81,17 @@ class noip extends eqLogic {
     public static function syncNoIp() {
         self::info("Debug de synchronisation");
 
-        /** @var noip $eqLogic */
         $eqLogics = eqLogic::byType('noip');
+        /** @var noip $eqLogic */
         foreach ($eqLogics as $eqLogic) {
             if ($eqLogic->getConfiguration('type', '') != 'account' || $eqLogic->getIsEnable() != 1) {
                 continue;
             }
+
+            // retrieve all DNS for each account
             $obj = $eqLogic->executeNoIpScript($eqLogic->getConfiguration('login'), $eqLogic->getConfiguration('password'), 0);
 
+            // if dns available, then create a dedicated domain obj and update data
             if (!is_null($obj)) {
                 foreach ($obj as $domain) {
                     $existingDomain = noip::byLogicalId($domain->hostname, 'noip');
