@@ -221,6 +221,8 @@ class noip extends eqLogic {
                     $endDate = date('d/m/Y', strtotime($domain->expirationdays . " days"));
                     $existingDomain->checkAndUpdateCmd('endDate', $endDate);
                 }
+                $existingDomain->setConfiguration('parentId', $this->getId());
+                $existingDomain->save(true);
             }
         }
     }
