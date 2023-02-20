@@ -88,9 +88,18 @@ class Robot:
 
     def login(self):
         logging.info("Opening {LOGIN_URL}...".format(LOGIN_URL=Robot.LOGIN_URL))
-        self.browser.get(Robot.LOGIN_URL)
-        if self.debug > 1:
-            self.browser.save_screenshot(self.rootpath + "/data/debug1.png")
+        try:
+            self.browser.get(Robot.LOGIN_URL)
+            if self.debug > 1:
+                self.browser.save_screenshot(self.rootpath + "/data/debug1.png")
+        except TimeoutException as ex:
+            self.browser.save_screenshot(self.rootpath + "/data/timeout.png")
+            logging.error("Timeout has been thrown. " + str(ex))
+            self.browser.close()
+        except Exception as ex:
+            self.browser.save_screenshot(self.rootpath + "/data/exception.png")
+            logging.error("Exception has been thrown. " + str(ex))
+            self.browser.close()
 
         logging.info("Logging in...")
         # ele_usr = self.browser.find_element_by_name("username")
@@ -195,9 +204,14 @@ class Robot:
         logging.info("Opening {HOST_URL}...".format(HOST_URL=Robot.HOST_URL))
         try:
             self.browser.get(Robot.HOST_URL)
-        except TimeoutException as e:
+        except TimeoutException as ex:
             self.browser.save_screenshot(self.rootpath + "/data/timeout.png")
-            logging.info("Timeout: {e}".format(e=str(e)))
+            logging.error("Timeout has been thrown. " + str(ex))
+            self.browser.close()
+        except Exception as ex:
+            self.browser.save_screenshot(self.rootpath + "/data/exception.png")
+            logging.error("Exception has been thrown. " + str(ex))
+            self.browser.close()
 
     def update_host(self, host_button, host_name):
         logging.info("Updating {host_name}".format(host_name=host_name))
