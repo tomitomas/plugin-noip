@@ -192,6 +192,13 @@ foreach ($eqLogics as $eqLogic) {
                                 <input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="widgetTemplate" />
                             </div>
                         </div>
+
+                        <div class="form-group" id="div_refreshNoIp">
+                            <label class="col-sm-3 control-label help" data-help="{{Permet de relance un nouveau rafraichissement automatique 5min plus tard, si le dernier s'est terminé en erreur}}">{{Refresh si erreur}}</label>
+                            <div class="col-sm-3">
+                                <input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="refreshOnError" />
+                            </div>
+                        </div>
                     </fieldset>
                 </form>
             </div>

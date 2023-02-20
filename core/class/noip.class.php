@@ -202,6 +202,20 @@ class noip extends eqLogic {
         return $json_a;
     }
 
+    public static function refreshInfoEq($_options) {
+        /** @var noip $eqLogic */
+        self::debug('starting refreshInfoEq - ' . json_encode($_options));
+        $eqId = $_options['eqId'] ?? null;
+        $eqLogic = self::byId($eqId);
+        if (!is_object($eqLogic)) {
+            self::debug('no eq found with id [' . $eqId . ']');
+            return;
+        }
+
+        self::debug('running scan');
+        $eqLogic->scan(1);
+    }
+
     public function refreshInfo($renew) {
         $obj = $this->executeNoIpScript($this->getConfiguration('login'), $this->getConfiguration('password'), $renew);
         if (!is_null($obj)) {
@@ -209,6 +223,10 @@ class noip extends eqLogic {
             $this->checkAndUpdateCmd('refreshStatus', 'ok');
         } else {
             $this->checkAndUpdateCmd('refreshStatus', 'error');
+            if ($this->getConfiguration('refreshOnError', 0)) {
+                self::debug('Set a new refres in 5min');
+                self::executeAsync('refreshInfoEq', array("eqId" => $this->getId()), date('Y-m-d H:i:s', strtotime("+5 minutes")));
+            }
         }
     }
 
@@ -238,7 +256,7 @@ class noip extends eqLogic {
      * From @Mips2648
      *
      * @param string $_method
-     * @param [type] $_option
+     * @param array|null $_option
      * @param string $_date
      * @return void
      */
