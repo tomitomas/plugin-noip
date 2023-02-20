@@ -15,6 +15,7 @@
 
 from selenium import webdriver
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver.common.by import By
 from datetime import date
 from datetime import timedelta
 import time
@@ -24,15 +25,20 @@ import re
 import base64
 import json
 
+
 class Logger:
     def __init__(self, level):
         self.level = 0 if level is None else level
 
     def log(self, msg, level=None):
-        self.time_string_formatter = time.strftime('%Y/%m/%d %H:%M:%S', time.localtime(time.time()))
+        self.time_string_formatter = time.strftime(
+            "%Y/%m/%d %H:%M:%S", time.localtime(time.time())
+        )
         self.level = self.level if level is None else level
         if self.level > 0:
-            print("[{mydate}] - {msg}".format(mydate=self.time_string_formatter,msg=msg))
+            print(
+                "[{mydate}] - {msg}".format(mydate=self.time_string_formatter, msg=msg)
+            )
 
 
 class Robot:
@@ -55,16 +61,18 @@ class Robot:
     @staticmethod
     def init_browser():
         options = webdriver.ChromeOptions()
-        #added for Raspbian Buster 4.0+ versions. Check https://www.raspberrypi.org/forums/viewtopic.php?t=258019 for reference.
+        # added for Raspbian Buster 4.0+ versions. Check https://www.raspberrypi.org/forums/viewtopic.php?t=258019 for reference.
         options.add_argument("disable-features=VizDisplayCompositor")
         options.add_argument("headless")
         options.add_argument("no-sandbox")  # need when run in docker
         options.add_argument("window-size=1200x800")
-        options.add_argument("user-agent={USER_AGENT}".format(USER_AGENT=Robot.USER_AGENT))
-        if 'https_proxy' in os.environ:
-            options.add_argument("proxy-server=" + os.environ['https_proxy'])
+        options.add_argument(
+            "user-agent={USER_AGENT}".format(USER_AGENT=Robot.USER_AGENT)
+        )
+        if "https_proxy" in os.environ:
+            options.add_argument("proxy-server=" + os.environ["https_proxy"])
         browser = webdriver.Chrome(options=options)
-        browser.set_page_load_timeout(90) # Extended timeout for Raspberry Pi.
+        browser.set_page_load_timeout(90)  # Extended timeout for Raspberry Pi.
         return browser
 
     def login(self):
@@ -74,36 +82,53 @@ class Robot:
             self.browser.save_screenshot(self.rootpath + "/data/debug1.png")
 
         self.logger.log("Logging in...")
-        ele_usr = self.browser.find_element_by_name("username")
-        ele_pwd = self.browser.find_element_by_name("password")
+        # ele_usr = self.browser.find_element_by_name("username")
+        ele_usr = self.browser.find_element(By.NAME, "username")
+        # ele_pwd = self.browser.find_element_by_name("password")
+        ele_pwd = self.browser.find_element(By.NAME, "password")
         ele_usr.send_keys(self.username)
-        #ele_pwd.send_keys(base64.b64decode(self.password).decode('utf-8'))
+        # ele_pwd.send_keys(base64.b64decode(self.password).decode('utf-8'))
         ele_pwd.send_keys(self.password)
 
         button_found = False
-       
+
         try:
-            self.browser.find_element_by_name("Login").click()
+            self.browser.find_element(
+                By.XPATH, '//button[@id="clogs-captcha-button"]'
+            ).click()
             button_found = True
         except Exception as e:
-            if self.debug > 1:
-                self.logger.log("DEBUG: Element by name login not found: {e}".format(e=str(e)))
-        
-        if button_found == False:
-            try:
-                self.browser.find_element_by_xpath('//button[@data-action="login"]').click()
-                button_found = True
-            except Exception as e:
-                if self.debug > 1:
-                    self.logger.log("DEBUG: Element by attr data-action=login not found: {e}".format(e=str(e))) 
+            self.logger.log(
+                "ERROR: Element by attr id=clogs-captcha-button not found: {e}".format(
+                    e=str(e)
+                )
+            )
 
         if button_found == False:
             try:
-                self.browser.find_element_by_xpath('//button[@id="clogs-captcha-button"]').click()
+                # self.browser.find_element(By.XPATH,'//button[@data-action="login"]').click()
+                self.browser.find_element(
+                    By.XPATH, '//button[@data-action="login"]'
+                ).click()
                 button_found = True
             except Exception as e:
-                self.logger.log("ERROR: Element by attr id=clogs-captcha-button not found: {e}".format(e=str(e))) 
-                raise Exception('Login button not found')
+                if self.debug > 1:
+                    self.logger.log(
+                        "DEBUG: Element by attr data-action=login not found: {e}".format(
+                            e=str(e)
+                        )
+                    )
+
+        if button_found == False:
+            try:
+                self.browser.find_element(By.NAME, "Login").click()
+                button_found = True
+            except Exception as e:
+                if self.debug > 1:
+                    self.logger.log(
+                        "DEBUG: Element by name login not found: {e}".format(e=str(e))
+                    )
+                raise Exception("Login button not found")
 
         time.sleep(3)
         if self.debug > 1:
@@ -118,23 +143,39 @@ class Robot:
 
         hosts = self.get_hosts()
         for host in hosts:
-            host_link = self.get_host_link(host, iteration) # This is for if we wanted to modify our Host IP.
-            host_button = self.get_host_button(host, iteration) # This is the button to confirm our free host
+            host_link = self.get_host_link(
+                host, iteration
+            )  # This is for if we wanted to modify our Host IP.
+            host_button = self.get_host_button(
+                host, iteration
+            )  # This is the button to confirm our free host
             host_name = host_link.text
             if self.debug > 1:
-                self.logger.log("Dealing with {host_name}".format(host_name=host_name)) 
+                self.logger.log("Dealing with {host_name}".format(host_name=host_name))
             expiration_days = self.get_host_expiration_days(self, host, iteration)
-            self.logger.log("{host_name} expires in {expiration_days} days".format(host_name=host_name,expiration_days=str(expiration_days)))
+            self.logger.log(
+                "{host_name} expires in {expiration_days} days".format(
+                    host_name=host_name, expiration_days=str(expiration_days)
+                )
+            )
             renewed = "ok"
             if expiration_days <= 7:
                 renewed = "warning"
             if self.renew > 0 and expiration_days < self.threshold:
                 renewed = self.update_host(host_button, host_name)
                 if renewed == "ok":
-                    expiration_days = self.get_host_expiration_days(self, host, iteration)
+                    expiration_days = self.get_host_expiration_days(
+                        self, host, iteration
+                    )
                 count += 1
             iteration += 1
-            self.data.append({'hostname':host_name, 'expirationdays':expiration_days, 'renewed':renewed})
+            self.data.append(
+                {
+                    "hostname": host_name,
+                    "expirationdays": expiration_days,
+                    "renewed": renewed,
+                }
+            )
         self.browser.save_screenshot(self.rootpath + "/data/results.png")
         self.logger.log("Confirmed hosts: {count}".format(count=str(count)))
         return True
@@ -153,56 +194,76 @@ class Robot:
         time.sleep(3)
         intervention = False
         try:
-            if self.browser.find_elements_by_xpath("//h2[@class='big']")[0].text == "Upgrade Now":
-                intervention = True      
+            if (
+                self.browser.find_elements_by_xpath("//h2[@class='big']")[0].text
+                == "Upgrade Now"
+            ):
+                intervention = True
         except:
             pass
 
         if intervention:
             if self.debug > 1:
                 self.browser.save_screenshot(self.rootpath + "/data/intervention.png")
-            self.logger.log("{host_name} requires manual intervention for update".format(host_name=host_name,))
+            self.logger.log(
+                "{host_name} requires manual intervention for update".format(
+                    host_name=host_name,
+                )
+            )
             return "error"
         else:
-            self.browser.save_screenshot(self.rootpath + "/data/{host_name}_success.png".format(host_name=host_name))
-            return "ok"       
+            self.browser.save_screenshot(
+                self.rootpath
+                + "/data/{host_name}_success.png".format(host_name=host_name)
+            )
+            return "ok"
 
     @staticmethod
     def get_host_expiration_days(self, host, iteration):
         try:
-            host_remaining_days = host.find_element_by_xpath(".//a[contains(@class,'no-link-style')]").get_attribute("data-original-title")
+            host_remaining_days = host.find_element(
+                By.XPATH, ".//a[contains(@class,'no-link-style')]"
+            ).get_attribute("data-original-title")
             if host_remaining_days is None:
-                host_remaining_days = host.find_element_by_xpath(".//a[contains(@class,'no-link-style')]").text
+                host_remaining_days = host.find_element(
+                    By.XPATH, ".//a[contains(@class,'no-link-style')]"
+                ).text
             if self.debug > 1:
-                self.logger.log("host remaining days found: {days}".format(days=str(host_remaining_days))) 
+                self.logger.log(
+                    "host remaining days found: {days}".format(
+                        days=str(host_remaining_days)
+                    )
+                )
         except:
             host_remaining_days = "Expires in 0 days"
             pass
         regex_match = re.search("\\d+", host_remaining_days)
-        #if regex_match is None:
-        #    host_remaining_days = host.find_element_by_xpath(".//a[@class='no-link-style']").text
-        #regex_match = re.search("\\d+", host_remaining_days)
-        if regex_match is None:    
+        # if regex_match is None:
+        #    host_remaining_days = host.find_element(By.XPATH,".//a[@class='no-link-style']").text
+        # regex_match = re.search("\\d+", host_remaining_days)
+        if regex_match is None:
             raise Exception("Expiration days label does not match the expected pattern")
         expiration_days = int(regex_match.group(0))
         return expiration_days
 
     @staticmethod
     def get_host_link(host, iteration):
-        return host.find_element_by_xpath(".//a[@class='link-info cursor-pointer']")
+        return host.find_element(By.XPATH, ".//a[@class='link-info cursor-pointer']")
 
     @staticmethod
     def get_host_button(host, iteration):
-        return host.find_element_by_xpath(".//following-sibling::td[4]/button[contains(@class, 'btn')]")
+        return host.find_element(
+            By.XPATH, ".//following-sibling::td[4]/button[contains(@class, 'btn')]"
+        )
 
     def get_hosts(self):
         if self.debug > 1:
-            self.logger.log("Getting hosts list...") 
-        host_tds = self.browser.find_elements_by_xpath("//td[@data-title=\"Host\"]")
+            self.logger.log("Getting hosts list...")
+        host_tds = self.browser.find_elements(By.XPATH, '//td[@data-title="Host"]')
         if len(host_tds) == 0:
+            if self.debug > 1:
+                self.browser.save_screenshot(self.rootpath + "/data/debug3.png")
             raise Exception("No hosts or host table rows not found")
-        if self.debug > 1:
-            self.browser.save_screenshot(self.rootpath + "/data/debug3.png")
         return host_tds
 
     def run(self):
@@ -215,7 +276,7 @@ class Robot:
         except Exception as e:
             self.logger.log(str(e))
             self.browser.save_screenshot(self.rootpath + "/data/exception.png")
-            self.data = {'msg':str(e)}
+            self.data = {"msg": str(e)}
             rc = 2
         finally:
             self.browser.quit()
@@ -226,15 +287,33 @@ class Robot:
 
 
 def main(argv=None):
-    noip_username, noip_password, noip_threshold, noip_renew, noip_rootpath, debug,  = get_args_values(argv)
-    return (Robot(noip_username, noip_password, noip_threshold, noip_renew, noip_rootpath, debug)).run()
+    (
+        noip_username,
+        noip_password,
+        noip_threshold,
+        noip_renew,
+        noip_rootpath,
+        debug,
+    ) = get_args_values(argv)
+    return (
+        Robot(
+            noip_username,
+            noip_password,
+            noip_threshold,
+            noip_renew,
+            noip_rootpath,
+            debug,
+        )
+    ).run()
 
 
 def get_args_values(argv):
     if argv is None:
         argv = sys.argv
     if len(argv) < 3:
-        print("Usage: <noip_username> <noip_password> <threshold> <renew> <rootpath> [<debug-level>]")
+        print(
+            "Usage: <noip_username> <noip_password> <threshold> <renew> <rootpath> [<debug-level>]"
+        )
         sys.exit(1)
 
     noip_username = argv[1]
@@ -245,7 +324,14 @@ def get_args_values(argv):
     debug = 1
     if len(argv) > 6:
         debug = int(argv[6])
-    return noip_username, noip_password, noip_threshold, noip_renew, noip_rootpath, debug
+    return (
+        noip_username,
+        noip_password,
+        noip_threshold,
+        noip_renew,
+        noip_rootpath,
+        debug,
+    )
 
 
 if __name__ == "__main__":
