@@ -23,13 +23,9 @@ $('#bt_resetEqlogicSearch2').on('click', function () {
 
 $('.eqLogicAttr[data-l1key=configuration][data-l2key=type]').on('change', function () {
   if ($(this).value() == 'account') {
-    $('#div_loginNoIp').show();
-    $('#div_passNoIp').show();
-    $('#div_widgetNoIp').show();
+    $('.onlyAccount').show();
   } else {
-    $('#div_loginNoIp').hide();
-    $('#div_passNoIp').hide();
-    $('#div_widgetNoIp').hide();
+    $('.onlyAccount').hide();
   }
 });
 
@@ -42,14 +38,10 @@ function printEqLogic(_eqLogic) {
     _eqLogic.configuration = {};
   }
   if (_eqLogic.configuration.type == "account") {
-    $('#div_loginNoIp').show();
-    $('#div_passNoIp').show();
-    $('#div_widgetNoIp').show();
+    $('.onlyAccount').show();
   }
   if (_eqLogic.configuration.type == "domain") {
-    $('#div_loginNoIp').hide();
-    $('#div_passNoIp').hide();
-    $('#div_widgetNoIp').hide();
+    $('.onlyAccount').hide();
   }
 }
 
