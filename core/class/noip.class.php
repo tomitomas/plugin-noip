@@ -18,9 +18,10 @@
 
 /* * ***************************Includes********************************* */
 require_once __DIR__ . '/../../../../core/php/core.inc.php';
+require_once __DIR__ . '/../../3rdparty/autoload.php';
 
 class noip extends eqLogic {
-
+    use tomitomasEqLogicTrait;
 
     /* * *************************Attributs****************************** */
 
@@ -41,7 +42,7 @@ class noip extends eqLogic {
         foreach (self::byType('noip') as $eqLogic) {
             if ($eqLogic->getConfiguration('type') == 'account') {
                 $eqLogic->checkAndUpdateCmd('nextcheck', $cron->getNextRunDate());
-                log::add('noip', 'debug', "Prochaine vérification automatique pour " . $eqLogic->getName() . " : " . $cron->getNextRunDate());
+                self::debug("Prochaine vérification automatique pour " . $eqLogic->getName() . " : " . $cron->getNextRunDate());
             }
         }
     }
@@ -60,11 +61,11 @@ class noip extends eqLogic {
         $name = '';
         if (self::nameExists($domain->hostname)) {
             $name = $domain->hostname . '_' . time();
-            log::add('noip', 'debug', "Nom en double " . $domain->hostname . " renommé en " . $name);
+            self::debug("Nom en double " . $domain->hostname . " renommé en " . $name);
         } else {
             $name = $domain->hostname;
         }
-        log::add('noip', 'info', "Domaine créé : " . $name);
+        self::info("Domaine créé : " . $name);
         $eqLogicClient->setName($name);
         $eqLogicClient->setIsEnable(1);
         $eqLogicClient->setIsVisible(0);
@@ -78,15 +79,19 @@ class noip extends eqLogic {
     }
 
     public static function syncNoIp() {
-        log::add('noip', 'info', "syncNoIp");
+        self::info("Debug de synchronisation");
 
         $eqLogics = eqLogic::byType('noip');
+        /** @var noip $eqLogic */
         foreach ($eqLogics as $eqLogic) {
             if ($eqLogic->getConfiguration('type', '') != 'account' || $eqLogic->getIsEnable() != 1) {
                 continue;
             }
+
+            // retrieve all DNS for each account
             $obj = $eqLogic->executeNoIpScript($eqLogic->getConfiguration('login'), $eqLogic->getConfiguration('password'), 0);
 
+            // if dns available, then create a dedicated domain obj and update data
             if (!is_null($obj)) {
                 foreach ($obj as $domain) {
                     $existingDomain = noip::byLogicalId($domain->hostname, 'noip');
@@ -104,6 +109,8 @@ class noip extends eqLogic {
                 $eqLogic->recordData($obj);
             }
         }
+
+        self::info("Fin de la synchronisation");
     }
 
     public static function removeAllDomains($login) {
@@ -122,71 +129,10 @@ class noip extends eqLogic {
     }
 
     public function postSave() {
-        if ($this->getConfiguration('type', '') == 'domain') {
-            if ($this->getIsEnable()) {
-                $cmd = $this->getCmd(null, 'hostname');
-                if (!is_object($cmd)) {
-                    $cmd = new noipCmd();
-                    $cmd->setName('Hostname');
-                    $cmd->setEqLogic_id($this->getId());
-                    $cmd->setLogicalId('hostname');
-                    $cmd->setType('info');
-                    $cmd->setSubType('string');
-                    $cmd->setGeneric_type('GENERIC_INFO');
-                    $cmd->setIsVisible(1);
-                    $cmd->save();
-                }
-                $cmd = $this->getCmd(null, 'expiration');
-                if (!is_object($cmd)) {
-                    $cmd = new noipCmd();
-                    $cmd->setName('Days before expiration');
-                    $cmd->setEqLogic_id($this->getId());
-                    $cmd->setLogicalId('expiration');
-                    $cmd->setType('info');
-                    $cmd->setSubType('numeric');
-                    $cmd->setIsHistorized(0);
-                    $cmd->setTemplate('dashboard', 'tile');
-                    $cmd->setTemplate('mobile', 'tile');
-                    $cmd->setIsVisible(1);
-                    $cmd->save();
-                }
-                $cmd = $this->getCmd(null, 'renew');
-                if (!is_object($cmd)) {
-                    $cmd = new noipCmd();
-                    $cmd->setName('Renew status');
-                    $cmd->setEqLogic_id($this->getId());
-                    $cmd->setLogicalId('renew');
-                    $cmd->setType('info');
-                    $cmd->setSubType('string');
-                    $cmd->setGeneric_type('GENERIC_INFO');
-                    $cmd->setIsVisible(1);
-                    $cmd->save();
-                }
-            }
-        } else {
-            $cmd = $this->getCmd(null, 'refresh');
-            if (!is_object($cmd)) {
-                $cmd = new noipCmd();
-                $cmd->setLogicalId('refresh');
-                $cmd->setEqLogic_id($this->getId());
-                $cmd->setName('Rafraichir');
-                $cmd->setType('action');
-                $cmd->setSubType('other');
-                // $cmd->setEventOnly(1);
-                $cmd->save();
-            }
-            $cmd = $this->getCmd(null, 'nextcheck');
-            if (!is_object($cmd)) {
-                $cmd = new noipCmd();
-                $cmd->setName('Next automatic check');
-                $cmd->setEqLogic_id($this->getId());
-                $cmd->setLogicalId('nextcheck');
-                $cmd->setType('info');
-                $cmd->setSubType('string');
-                $cmd->setGeneric_type('GENERIC_INFO');
-                $cmd->setIsVisible(1);
-                $cmd->save();
-            }
+        $type = $this->getConfiguration('type', 'account');
+        $this->createCommands(__DIR__  . '/../config/params.json', $type);
+
+        if ($type == 'account') {
             $cron = cron::byClassAndFunction('noip', 'autoCheck');
             $this->checkAndUpdateCmd('nextcheck', $cron->getNextRunDate());
         }
@@ -225,14 +171,6 @@ class noip extends eqLogic {
 
     public function executeNoIpScript($login, $password, $renew) {
         $noip_path = dirname(__FILE__) . '/../..';
-        // unlink($noip_path . '/data/output.json');
-        // unlink($noip_path . '/data/debug1.png');
-        // unlink($noip_path . '/data/debug2.png');
-        // unlink($noip_path . '/data/debug3.png');
-        // unlink($noip_path . '/data/results.png');
-        // unlink($noip_path . '/data/intervention.png');
-        // unlink($noip_path . '/data/exception.png');
-        // unlink($noip_path . '/data/timeout.png');
 
         array_map('unlink', glob("$noip_path/data/*.png"));
         array_map('unlink', glob("$noip_path/data/*.json"));
@@ -243,32 +181,52 @@ class noip extends eqLogic {
         }
 
         $cmd = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "' . $password . '" ' . config::byKey('renewThreshold', 'noip', 7) . ' ' . $renew . ' ' . $noip_path . ' ' . $loglevel;
-        $cmdInfo = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "#####" ' . config::byKey('renewThreshold', 'noip', 7) . ' ' . $renew . ' ' . $noip_path . ' ' . $loglevel;
-        log::add(__CLASS__, 'info', 'Lancement script No-Ip : ' . $cmdInfo);
+        self::info('Lancement script No-Ip : ' . str_replace($password, '*******', $cmd));
 
         exec($cmd . ' >> ' . log::getPathToLog('noip') . ' 2>&1');
         $string = file_get_contents($noip_path . '/data/output.json');
-        log::add(__CLASS__, 'debug', $this->getHumanName() . ' file content: ' . $string);
+        self::debug($this->getHumanName() . ' file content: ' . $string);
         if ($string === false) {
-            log::add(__CLASS__, 'error', $this->getHumanName() . ' file content empty');
+            self::error($this->getHumanName() . ' file content empty');
             return null;
         }
         $json_a = json_decode($string);
         if ($json_a === null) {
-            log::add(__CLASS__, 'error', $this->getHumanName() . ' JSON decode impossible');
+            self::error($this->getHumanName() . ' JSON decode impossible');
             return null;
         }
         if (isset($json_a->msg)) {
-            log::add(__CLASS__, 'error', $this->getHumanName() . ' error while executing Python script: ' . $json_a->msg);
+            self::error($this->getHumanName() . ' error while executing Python script: ' . $json_a->msg);
             return null;
         }
         return $json_a;
+    }
+
+    public static function refreshInfoEq($_options) {
+        /** @var noip $eqLogic */
+        self::debug('starting refreshInfoEq - ' . json_encode($_options));
+        $eqId = $_options['eqId'] ?? null;
+        $eqLogic = self::byId($eqId);
+        if (!is_object($eqLogic)) {
+            self::debug('no eq found with id [' . $eqId . ']');
+            return;
+        }
+
+        self::debug('running scan');
+        $eqLogic->scan(1);
     }
 
     public function refreshInfo($renew) {
         $obj = $this->executeNoIpScript($this->getConfiguration('login'), $this->getConfiguration('password'), $renew);
         if (!is_null($obj)) {
             $this->recordData($obj);
+            $this->checkAndUpdateCmd('refreshStatus', 'ok');
+        } else {
+            $this->checkAndUpdateCmd('refreshStatus', 'error');
+            if ($this->getConfiguration('refreshOnError', 0)) {
+                self::debug('Set a new refres in 5min');
+                self::executeAsync('refreshInfoEq', array("eqId" => $this->getId()), date('Y-m-d H:i:s', strtotime("+5 minutes")));
+            }
         }
     }
 
@@ -285,8 +243,43 @@ class noip extends eqLogic {
                     $existingDomain->checkAndUpdateCmd('hostname', $domain->hostname);
                     $existingDomain->checkAndUpdateCmd('expiration', $domain->expirationdays);
                     $existingDomain->checkAndUpdateCmd('renew', $domain->renewed);
+                    $endDate = date('d/m/Y', strtotime($domain->expirationdays . " days"));
+                    $existingDomain->checkAndUpdateCmd('endDate', $endDate);
                 }
+                $existingDomain->setConfiguration('parentId', $this->getId());
+                $existingDomain->save(true);
             }
+        }
+    }
+
+    /**
+     * From @Mips2648
+     *
+     * @param string $_method
+     * @param array|null $_option
+     * @param string $_date
+     * @return void
+     */
+    public static function executeAsync(string $_method, $_option = null, $_date = 'now') {
+        if (!method_exists(__CLASS__, $_method)) {
+            throw new InvalidArgumentException("Method provided for executeAsync does not exist: {$_method}");
+        }
+
+        $cron = new cron();
+        $cron->setClass(__CLASS__);
+        $cron->setFunction($_method);
+        if (isset($_option)) {
+            $cron->setOption($_option);
+        }
+        $cron->setOnce(1);
+        $scheduleTime = strtotime($_date);
+        $cron->setSchedule(cron::convertDateToCron($scheduleTime));
+        $cron->save();
+        if ($scheduleTime <= strtotime('now')) {
+            $cron->run();
+            log::add(__CLASS__, 'debug', "Task '{$_method}' executed now");
+        } else {
+            log::add(__CLASS__, 'debug', "Task '{$_method}' scheduled at {$_date}");
         }
     }
 
@@ -362,7 +355,7 @@ class noipCmd extends cmd {
         if (!is_object($eqLogic) || $eqLogic->getIsEnable() != 1) {
             throw new Exception(__('Equipement desactivé impossible d\éxecuter la commande : ' . $this->getHumanName(), __FILE__));
         }
-        log::add('noip', 'debug', 'Execution de la commande ' . $this->getLogicalId());
+        noip::debug('Execution de la commande ' . $this->getLogicalId());
         switch ($this->getLogicalId()) {
             case "refresh":
                 $eqLogic->scan(1);

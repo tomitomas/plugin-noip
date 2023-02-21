@@ -1,0 +1,15 @@
+{
+    "name": "tomitomas/jeedom-tools",
+    "description": "Generic lib for jeedom plugins",
+    "license": "MIT",
+    "autoload": {
+        "psr-0": {
+            "tomitomasEqLogicTrait": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "ToMitOmAs"
+        }
+    ]
+}

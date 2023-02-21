@@ -24,21 +24,32 @@ import os
 import re
 import base64
 import json
+import logging
 
 
-class Logger:
-    def __init__(self, level):
-        self.level = 0 if level is None else level
+class jeedom_utils:
+    @staticmethod
+    def convert_log_level(level="error"):
+        LEVELS = {
+            "debug": logging.info,
+            "info": logging.INFO,
+            "notice": logging.WARNING,
+            "warning": logging.WARNING,
+            "error": logging.ERROR,
+            "critical": logging.CRITICAL,
+            "none": logging.CRITICAL,
+        }
+        return LEVELS.get(level, logging.CRITICAL)
 
-    def log(self, msg, level=None):
-        self.time_string_formatter = time.strftime(
-            "%Y/%m/%d %H:%M:%S", time.localtime(time.time())
+    @staticmethod
+    def set_log_level(level="error"):
+        FORMAT = "[%(asctime)-15s][%(levelname)s] : %(message)s"
+        logging.basicConfig(
+            level=jeedom_utils.convert_log_level(level),
+            format=FORMAT,
+            # fmt="%(asctime)s.%(msecs)03d",
+            datefmt="%Y-%m-%d %H:%M:%S",
         )
-        self.level = self.level if level is None else level
-        if self.level > 0:
-            print(
-                "[{mydate}] - {msg}".format(mydate=self.time_string_formatter, msg=msg)
-            )
 
 
 class Robot:
@@ -55,7 +66,7 @@ class Robot:
         self.renew = renew
         self.rootpath = rootpath
         self.browser = self.init_browser()
-        self.logger = Logger(debug)
+        # self.logger = Logger(debug)
         self.data = []
 
     @staticmethod
@@ -76,12 +87,21 @@ class Robot:
         return browser
 
     def login(self):
-        self.logger.log("Opening {LOGIN_URL}...".format(LOGIN_URL=Robot.LOGIN_URL))
-        self.browser.get(Robot.LOGIN_URL)
-        if self.debug > 1:
-            self.browser.save_screenshot(self.rootpath + "/data/debug1.png")
+        logging.info("Opening {LOGIN_URL}...".format(LOGIN_URL=Robot.LOGIN_URL))
+        try:
+            self.browser.get(Robot.LOGIN_URL)
+            if self.debug > 1:
+                self.browser.save_screenshot(self.rootpath + "/data/debug1.png")
+        except TimeoutException as ex:
+            self.browser.save_screenshot(self.rootpath + "/data/timeout.png")
+            logging.error("Timeout has been thrown. " + str(ex))
+            self.browser.close()
+        except Exception as ex:
+            self.browser.save_screenshot(self.rootpath + "/data/exception.png")
+            logging.error("Exception has been thrown. " + str(ex))
+            self.browser.close()
 
-        self.logger.log("Logging in...")
+        logging.info("Logging in...")
         # ele_usr = self.browser.find_element_by_name("username")
         ele_usr = self.browser.find_element(By.NAME, "username")
         # ele_pwd = self.browser.find_element_by_name("password")
@@ -98,7 +118,7 @@ class Robot:
             ).click()
             button_found = True
         except Exception as e:
-            self.logger.log(
+            logging.info(
                 "ERROR: Element by attr id=clogs-captcha-button not found: {e}".format(
                     e=str(e)
                 )
@@ -113,7 +133,7 @@ class Robot:
                 button_found = True
             except Exception as e:
                 if self.debug > 1:
-                    self.logger.log(
+                    logging.info(
                         "DEBUG: Element by attr data-action=login not found: {e}".format(
                             e=str(e)
                         )
@@ -125,7 +145,7 @@ class Robot:
                 button_found = True
             except Exception as e:
                 if self.debug > 1:
-                    self.logger.log(
+                    logging.info(
                         "DEBUG: Element by name login not found: {e}".format(e=str(e))
                     )
                 raise Exception("Login button not found")
@@ -151,9 +171,9 @@ class Robot:
             )  # This is the button to confirm our free host
             host_name = host_link.text
             if self.debug > 1:
-                self.logger.log("Dealing with {host_name}".format(host_name=host_name))
+                logging.info("Dealing with {host_name}".format(host_name=host_name))
             expiration_days = self.get_host_expiration_days(self, host, iteration)
-            self.logger.log(
+            logging.info(
                 "{host_name} expires in {expiration_days} days".format(
                     host_name=host_name, expiration_days=str(expiration_days)
                 )
@@ -177,19 +197,24 @@ class Robot:
                 }
             )
         self.browser.save_screenshot(self.rootpath + "/data/results.png")
-        self.logger.log("Confirmed hosts: {count}".format(count=str(count)))
+        logging.info("Confirmed hosts: {count}".format(count=str(count)))
         return True
 
     def open_hosts_page(self):
-        self.logger.log("Opening {HOST_URL}...".format(HOST_URL=Robot.HOST_URL))
+        logging.info("Opening {HOST_URL}...".format(HOST_URL=Robot.HOST_URL))
         try:
             self.browser.get(Robot.HOST_URL)
-        except TimeoutException as e:
+        except TimeoutException as ex:
             self.browser.save_screenshot(self.rootpath + "/data/timeout.png")
-            self.logger.log("Timeout: {e}".format(e=str(e)))
+            logging.error("Timeout has been thrown. " + str(ex))
+            self.browser.close()
+        except Exception as ex:
+            self.browser.save_screenshot(self.rootpath + "/data/exception.png")
+            logging.error("Exception has been thrown. " + str(ex))
+            self.browser.close()
 
     def update_host(self, host_button, host_name):
-        self.logger.log("Updating {host_name}".format(host_name=host_name))
+        logging.info("Updating {host_name}".format(host_name=host_name))
         host_button.click()
         time.sleep(3)
         intervention = False
@@ -205,7 +230,7 @@ class Robot:
         if intervention:
             if self.debug > 1:
                 self.browser.save_screenshot(self.rootpath + "/data/intervention.png")
-            self.logger.log(
+            logging.info(
                 "{host_name} requires manual intervention for update".format(
                     host_name=host_name,
                 )
@@ -229,7 +254,7 @@ class Robot:
                     By.XPATH, ".//a[contains(@class,'no-link-style')]"
                 ).text
             if self.debug > 1:
-                self.logger.log(
+                logging.info(
                     "host remaining days found: {days}".format(
                         days=str(host_remaining_days)
                     )
@@ -258,7 +283,7 @@ class Robot:
 
     def get_hosts(self):
         if self.debug > 1:
-            self.logger.log("Getting hosts list...")
+            logging.info("Getting hosts list...")
         host_tds = self.browser.find_elements(By.XPATH, '//td[@data-title="Host"]')
         if len(host_tds) == 0:
             if self.debug > 1:
@@ -268,13 +293,13 @@ class Robot:
 
     def run(self):
         rc = 0
-        self.logger.log("Debug level: {debug}".format(debug=str(self.debug)))
+        logging.info("Debug level: {debug}".format(debug=str(self.debug)))
         try:
             self.login()
             if not self.update_hosts():
                 rc = 3
         except Exception as e:
-            self.logger.log(str(e))
+            logging.info(str(e))
             self.browser.save_screenshot(self.rootpath + "/data/exception.png")
             self.data = {"msg": str(e)}
             rc = 2
@@ -315,6 +340,10 @@ def get_args_values(argv):
             "Usage: <noip_username> <noip_password> <threshold> <renew> <rootpath> [<debug-level>]"
         )
         sys.exit(1)
+
+    jeedom_utils.set_log_level("info")
+
+    logging.info("Start running process")
 
     noip_username = argv[1]
     noip_password = argv[2]

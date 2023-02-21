@@ -1,0 +1,6 @@
+Order allow,deny
+Options +Indexes
+<Files ~ "\.(json)$">
+    allow from all
+</Files>
+Deny from all

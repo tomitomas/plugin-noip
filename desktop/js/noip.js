@@ -106,26 +106,19 @@ function addCmdToTable(_cmd) {
 }
 
 $('.eqLogicAction[data-action=discover]').on('click', function (e) {
-  var what = e.currentTarget.dataset.action2 || null;
-  $.ajax({// fonction permettant de faire de l'ajax
-    type: "POST", // methode de transmission des données au fichier php
+  $('#div_alert').showAlert({ message: 'La synchronisation est en cours et peut prendre un certain temps. A suivre... ', level: 'warning' });
+  $.post({// fonction permettant de faire de l'ajax
     url: "plugins/noip/core/ajax/noip.ajax.php", // url du fichier php
     data: {
       action: "syncNoIp"
     },
-    dataType: 'json',
-    error: function (request, status, error) {
-      handleAjaxError(request, status, error);
-    },
-    success: function (data) { // si l'appel a bien fonctionné
-      if (data.state != 'ok') {
-        $('#div_alert').showAlert({ message: data.result, level: 'danger' });
-        return;
-      }
-      $('#div_alert').showAlert({ message: '{{Synchronisation réussie}}', level: 'success' });
-      location.reload();
-    }
+    dataType: 'json'
   });
 });
 
 $("#table_cmd").sortable({ axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true });
+
+$('#bt_getScreenshot').on('click', function () {
+  $('#md_modal').dialog({ title: "{{Visualisation des screenshots}}" });
+  $('#md_modal').load('index.php?v=d&plugin=noip&modal=noip.screenshots').dialog('open');
+});
