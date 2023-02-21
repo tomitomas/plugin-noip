@@ -161,8 +161,11 @@ class Robot:
         time.sleep(3)
         iteration = 1
 
-        hosts = self.get_hosts()
-        for host in hosts:
+        rows = self.get_lines()
+        # logging.info("all rows : " + str("\n\n".join(str(v.text) for v in rows)))
+        for row in rows:
+            # host details
+            host = self.get_host(row)
             host_link = self.get_host_link(
                 host, iteration
             )  # This is for if we wanted to modify our Host IP.
@@ -171,13 +174,16 @@ class Robot:
             )  # This is the button to confirm our free host
             host_name = host_link.text
             if self.debug > 1:
-                logging.info("Dealing with {host_name}".format(host_name=host_name))
+                logging.info(f"Dealing with {host_name}")
+
+            # get IP details
+            ip = self.get_ip(row).text
+            if self.debug > 1:
+                logging.info(f"IP linked = {ip}")
+
             expiration_days = self.get_host_expiration_days(self, host, iteration)
-            logging.info(
-                "{host_name} expires in {expiration_days} days".format(
-                    host_name=host_name, expiration_days=str(expiration_days)
-                )
-            )
+            logging.info(f"{host_name} expires in {expiration_days} days")
+
             renewed = "ok"
             if expiration_days <= 7:
                 renewed = "warning"
@@ -194,10 +200,11 @@ class Robot:
                     "hostname": host_name,
                     "expirationdays": expiration_days,
                     "renewed": renewed,
+                    "ip": ip,
                 }
             )
         self.browser.save_screenshot(self.rootpath + "/data/results.png")
-        logging.info("Confirmed hosts: {count}".format(count=str(count)))
+        logging.info(f"Confirmed hosts: {count}")
         return True
 
     def open_hosts_page(self):
@@ -281,6 +288,27 @@ class Robot:
             By.XPATH, ".//following-sibling::td[4]/button[contains(@class, 'btn')]"
         )
 
+    def get_host(self, row):
+        if self.debug > 1:
+            logging.info("Getting host detail...")
+        host_tds = row.find_element(By.XPATH, './/td[@data-title="Host"]')
+        # logging.info("Result : " + host_tds.text)
+        if not host_tds:
+            if self.debug > 1:
+                self.browser.save_screenshot(self.rootpath + "/data/debug3.png")
+            raise Exception("No host row found")
+        return host_tds
+
+    def get_ip(self, row):
+        if self.debug > 1:
+            logging.info("Getting IP detail...")
+        ip_span = row.find_element(By.XPATH, './/td[@data-title="IP / Target"]')
+        if not ip_span:
+            if self.debug > 1:
+                self.browser.save_screenshot(self.rootpath + "/data/debug3_ip.png")
+            raise Exception("No IP span found")
+        return ip_span
+
     def get_hosts(self):
         if self.debug > 1:
             logging.info("Getting hosts list...")
@@ -290,6 +318,18 @@ class Robot:
                 self.browser.save_screenshot(self.rootpath + "/data/debug3.png")
             raise Exception("No hosts or host table rows not found")
         return host_tds
+
+    def get_lines(self):
+        if self.debug > 1:
+            logging.info("Getting all lines hosts list...")
+        host_trs = self.browser.find_elements(
+            By.XPATH, '//tr[@class="table-striped-row"]'
+        )
+        if len(host_trs) == 0:
+            if self.debug > 1:
+                self.browser.save_screenshot(self.rootpath + "/data/debug3_1.png")
+            raise Exception("No table rows found")
+        return host_trs
 
     def run(self):
         rc = 0
@@ -312,27 +352,37 @@ class Robot:
 
 
 def main(argv=None):
-    (
-        noip_username,
-        noip_password,
-        noip_threshold,
-        noip_renew,
-        noip_rootpath,
-        debug,
-    ) = get_args_values(argv)
-    return (
-        Robot(
+    try:
+        jeedom_utils.set_log_level("info")
+        logging.info("Start running process")
+
+        (
             noip_username,
             noip_password,
             noip_threshold,
             noip_renew,
             noip_rootpath,
             debug,
-        )
-    ).run()
+        ) = get_args_values(argv)
+
+        return (
+            Robot(
+                noip_username,
+                noip_password,
+                noip_threshold,
+                noip_renew,
+                noip_rootpath,
+                debug,
+            )
+        ).run()
+    except TimeoutException as ex:
+        logging.error("Timeout has been thrown. " + str(ex))
+    except Exception as ex:
+        logging.error("Exception has been thrown. " + str(ex))
 
 
 def get_args_values(argv):
+
     if argv is None:
         argv = sys.argv
     if len(argv) < 3:
@@ -340,10 +390,6 @@ def get_args_values(argv):
             "Usage: <noip_username> <noip_password> <threshold> <renew> <rootpath> [<debug-level>]"
         )
         sys.exit(1)
-
-    jeedom_utils.set_log_level("info")
-
-    logging.info("Start running process")
 
     noip_username = argv[1]
     noip_password = argv[2]

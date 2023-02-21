@@ -34,13 +34,23 @@
                 "order": 3
             },
             {
+                "logicalId": "iplinked",
+                "name": "IP liée",
+                "type": "info",
+                "subtype": "string",
+                "generic_type": "GENERIC_INFO",
+                "isHistorized": 0,
+                "isVisible": 1,
+                "order": 4
+            },
+            {
                 "logicalId": "endDate",
                 "name": "Expiration date",
                 "type": "info",
                 "subtype": "string",
                 "isHistorized": 0,
                 "isVisible": 1,
-                "order": 4,
+                "order": 5,
                 "template": {
                     "mobile": "line",
                     "dashboard": "line"

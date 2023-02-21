@@ -240,8 +240,10 @@ class noip extends eqLogic {
             }
             if (is_object($existingDomain)) {
                 if ($existingDomain->getIsEnable()) {
+                    self::debug("will update domain with following data : " . json_encode($domain));
                     $existingDomain->checkAndUpdateCmd('hostname', $domain->hostname);
                     $existingDomain->checkAndUpdateCmd('expiration', $domain->expirationdays);
+                    $existingDomain->checkAndUpdateCmd('iplinked', $domain->ip);
                     $existingDomain->checkAndUpdateCmd('renew', $domain->renewed);
                     $endDate = date('d/m/Y', strtotime($domain->expirationdays . " days"));
                     $existingDomain->checkAndUpdateCmd('endDate', $endDate);
