@@ -174,26 +174,26 @@ foreach ($eqLogics as $eqLogic) {
                             </div>
                         </div>
                         <br>
-                        <div class="form-group" id="div_loginNoIp">
+                        <div class="form-group onlyAccount" id="div_loginNoIp">
                             <label class="col-sm-3 control-label">{{Login No-Ip}}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="login" placeholder="Login No-Ip" />
                             </div>
                         </div>
-                        <div class="form-group" id="div_passNoIp">
+                        <div class="form-group onlyAccount" id="div_passNoIp">
                             <label class="col-sm-3 control-label">{{Mot de passe No-Ip}}</label>
                             <div class="col-sm-3">
                                 <input type="password" autocomplete="new-password" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="password" placeholder="Mot de passe No-Ip" />
                             </div>
                         </div>
-                        <div class="form-group" id="div_widgetNoIp">
+                        <div class="form-group onlyAccount" id="div_widgetNoIp">
                             <label class="col-sm-3 control-label help" data-help="{{Cocher la case pour utiliser le template de widget}}">{{Template de widget}}</label>
                             <div class="col-sm-3">
                                 <input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="widgetTemplate" />
                             </div>
                         </div>
 
-                        <div class="form-group" id="div_refreshNoIp">
+                        <div class="form-group onlyAccount" id="div_refreshNoIp">
                             <label class="col-sm-3 control-label help" data-help="{{Permet de relance un nouveau rafraichissement automatique 5min plus tard, si le dernier s'est terminé en erreur}}">{{Refresh auto si erreur}}</label>
                             <div class="col-sm-3">
                                 <input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="refreshOnError" />
