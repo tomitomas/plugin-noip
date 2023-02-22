@@ -128,7 +128,7 @@ class noipTools {
                 noip::debug('     data : ' . json_encode($data));
                 noip::debug('     headers : ' . json_encode($headers));
 
-                $result = "good"; //self::makeCurlRequest(self::$_noip_update, $headers, $data);
+                $result = self::makeCurlRequest(self::$_noip_update, $headers, $data);
                 noip::debug(__('==>Update result : ', __FILE__) . $result);
                 if (strpos($result, 'good') === false && strpos($result, 'nochg') === false) {
                     noip::error(__('Erreur de mise à jour : ', __FILE__) . $result);
