@@ -17,6 +17,9 @@ foreach ($eqLogics as $eqLogic) {
         $has[$type] = true;
     }
 }
+
+$myCurrentIp = noipTools::getCurrentIp();
+
 ?>
 
 <div class="row row-overflow">
@@ -199,12 +202,20 @@ foreach ($eqLogics as $eqLogic) {
                                 <input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="refreshOnError" />
                             </div>
                         </div>
+
+                        <div class="form-group onlyDomain">
+                            <label class="col-sm-3 control-label help" data-help="{{Maintenir automatiquement à jour l'ip liée à ce DNS en cas de changement}}">{{IP cible}}</label>
+                            <div class="col-sm-1" style="width:30px">
+                                <input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="makeIpRefresh" />
+                            </div>
+                            <div class="col-sm-2">
+                                <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="ipLinked" placeholder="<?= $myCurrentIp ?>" />
+                            </div>
+                        </div>
                     </fieldset>
                 </form>
             </div>
             <div role="tabpanel" class="tab-pane" id="commandtab">
-                <!--<a class="btn btn-success btn-sm cmdAction pull-right" data-action="add" style="margin-top:5px;">
-<i class="fa fa-plus-circle"></i> {{Commandes}}</a><br/> -->
                 <br />
                 <table id="table_cmd" class="table table-bordered table-condensed">
                     <thead>
