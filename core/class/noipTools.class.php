@@ -57,52 +57,6 @@ class noipTools {
         }
     }
 
-    public function makeCurlRequest2(string $url, array $headers = array(), array $data = array(), string $type = 'GET') {
-        $ch = curl_init();
-        try {
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_HEADER, false);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
-            curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-            curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-            curl_setopt($ch, CURLOPT_MAXREDIRS, 1);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-
-            if (count($headers) > 0) {
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            }
-
-            if ($type == 'POST') {
-                curl_setopt($ch, CURLOPT_POST, true);
-            }
-
-            if (count($data) > 0) {
-                // $encodedData = json_encode($data);
-                $encodedData = http_build_query($data);
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $encodedData);
-            }
-
-            $response = curl_exec($ch);
-
-            if (curl_errno($ch)) {
-                throw new Exception(curl_error($ch));
-                die();
-            }
-
-            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            if ($http_code == intval(200)) {
-                return $response;
-            } else {
-                throw new Exception("Ressource introuvable : " . $http_code);
-            }
-        } catch (Exception $ex) {
-            throw $ex;
-        } finally {
-            curl_close($ch);
-        }
-    }
-
     public static function getDomainToUpdate() {
 
         // get the current public IP
