@@ -35,7 +35,7 @@
             },
             {
                 "logicalId": "iplinked",
-                "name": "IP liée",
+                "name": "linked IP",
                 "type": "info",
                 "subtype": "string",
                 "generic_type": "GENERIC_INFO",
