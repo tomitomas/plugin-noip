@@ -24,8 +24,10 @@ $('#bt_resetEqlogicSearch2').on('click', function () {
 $('.eqLogicAttr[data-l1key=configuration][data-l2key=type]').on('change', function () {
   if ($(this).value() == 'account') {
     $('.onlyAccount').show();
+    $('.onlyDomain').hide();
   } else {
     $('.onlyAccount').hide();
+    $('.onlyDomain').show();
   }
 });
 
@@ -39,9 +41,11 @@ function printEqLogic(_eqLogic) {
   }
   if (_eqLogic.configuration.type == "account") {
     $('.onlyAccount').show();
+    $('.onlyDomain').hide();
   }
   if (_eqLogic.configuration.type == "domain") {
     $('.onlyAccount').hide();
+    $('.onlyDomain').show();
   }
 }
 
@@ -113,4 +117,14 @@ $("#table_cmd").sortable({ axis: "y", cursor: "move", items: ".cmd", placeholder
 $('#bt_getScreenshot').on('click', function () {
   $('#md_modal').dialog({ title: "{{Visualisation des screenshots}}" });
   $('#md_modal').load('index.php?v=d&plugin=noip&modal=noip.screenshots').dialog('open');
+});
+
+$('.eqLogicAttr[data-l1key=configuration][data-l2key=makeIpRefresh]').on('change', function () {
+  var elt = $('.eqLogicAttr[data-l1key=configuration][data-l2key=ipLinked]');
+  if ($(this).is(':checked')) {
+    elt.show();
+  }
+  else {
+    elt.hide();
+  }
 });

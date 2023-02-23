@@ -19,6 +19,7 @@
 /* * ***************************Includes********************************* */
 require_once __DIR__ . '/../../../../core/php/core.inc.php';
 require_once __DIR__ . '/../../3rdparty/autoload.php';
+require_once __DIR__ . '/noipTools.class.php';
 
 class noip extends eqLogic {
     use tomitomasEqLogicTrait;
@@ -26,6 +27,13 @@ class noip extends eqLogic {
     /* * *************************Attributs****************************** */
 
     /* * ***********************Methode static*************************** */
+
+    /* * Fonction exécutée automatiquement toutes les 15 minutes par Jeedom */
+    public static function cron15() {
+        noipTools::makeIpUpdate();
+    }
+
+
 
     public static function autoCheck() {
         foreach (self::byType('noip') as $eqLogic) {
@@ -126,6 +134,14 @@ class noip extends eqLogic {
     }
 
     public function preSave() {
+
+        // check if IP set is well formatted
+        $value = $this->getConfiguration('ipLinked', null);
+
+        if (!is_null($value) && !noipTools::isIpAddress($value)) {
+            self::error($value . ' is not a valid IP v4 address - not saving data');
+            $this->setConfiguration('ipLinked', null);
+        }
     }
 
     public function postSave() {
@@ -240,8 +256,10 @@ class noip extends eqLogic {
             }
             if (is_object($existingDomain)) {
                 if ($existingDomain->getIsEnable()) {
+                    self::debug("will update domain with following data : " . json_encode($domain));
                     $existingDomain->checkAndUpdateCmd('hostname', $domain->hostname);
                     $existingDomain->checkAndUpdateCmd('expiration', $domain->expirationdays);
+                    $existingDomain->checkAndUpdateCmd('iplinked', $domain->ip);
                     $existingDomain->checkAndUpdateCmd('renew', $domain->renewed);
                     $endDate = date('d/m/Y', strtotime($domain->expirationdays . " days"));
                     $existingDomain->checkAndUpdateCmd('endDate', $endDate);
