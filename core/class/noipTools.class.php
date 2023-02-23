@@ -46,7 +46,7 @@ class noipTools {
             $data = $request_http->exec(30, 1);
             $result = is_json($data, $data);
 
-            noip::debug('makeCurlRequest : ' . json_encode($result));
+            noip::trace('makeCurlRequest : ' . json_encode($result));
 
             // $http_code = $request_httpcurl_getinfo($ch, CURLINFO_HTTP_CODE);
             // if ($http_code == intval(200)) {
