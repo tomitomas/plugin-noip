@@ -1,0 +1,90 @@
+{
+    "cmds": {
+        "domain": [
+            {
+                "logicalId": "hostname",
+                "name": "Hostname",
+                "type": "info",
+                "subtype": "string",
+                "generic_type": "GENERIC_INFO",
+                "isVisible": 1,
+                "order": 1
+            },
+            {
+                "logicalId": "expiration",
+                "name": "Days before expiration",
+                "type": "info",
+                "subtype": "numeric",
+                "isHistorized": 0,
+                "isVisible": 1,
+                "order": 2,
+                "template": {
+                    "mobile": "line",
+                    "dashboard": "line"
+                }
+            },
+            {
+                "logicalId": "renew",
+                "name": "Renew status",
+                "type": "info",
+                "subtype": "string",
+                "generic_type": "GENERIC_INFO",
+                "isHistorized": 0,
+                "isVisible": 1,
+                "order": 3
+            },
+            {
+                "logicalId": "iplinked",
+                "name": "linked IP",
+                "type": "info",
+                "subtype": "string",
+                "generic_type": "GENERIC_INFO",
+                "isHistorized": 0,
+                "isVisible": 1,
+                "order": 4
+            },
+            {
+                "logicalId": "endDate",
+                "name": "Expiration date",
+                "type": "info",
+                "subtype": "string",
+                "isHistorized": 0,
+                "isVisible": 1,
+                "order": 5,
+                "template": {
+                    "mobile": "line",
+                    "dashboard": "line"
+                }
+            }
+        ],
+        "account": [
+            {
+                "logicalId": "refresh",
+                "name": "Refresh",
+                "type": "action",
+                "subtype": "other",
+                "isVisible": 1,
+                "order": 1
+            },
+            {
+                "logicalId": "nextcheck",
+                "name": "Next automatic check",
+                "type": "info",
+                "subtype": "string",
+                "generic_type": "GENERIC_INFO",
+                "isVisible": 1,
+                "order": 2
+            },
+            {
+                "logicalId": "refreshStatus",
+                "name": "Statut",
+                "type": "info",
+                "subtype": "string",
+                "generic_type": "GENERIC_INFO",
+                "isVisible": 1,
+                "order": 3
+            }
+        ]
+    },
+    "dictionary": {}
+}

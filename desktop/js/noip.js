@@ -23,13 +23,11 @@ $('#bt_resetEqlogicSearch2').on('click', function () {
 
 $('.eqLogicAttr[data-l1key=configuration][data-l2key=type]').on('change', function () {
   if ($(this).value() == 'account') {
-    $('#div_loginNoIp').show();
-    $('#div_passNoIp').show();
-    $('#div_widgetNoIp').show();
+    $('.onlyAccount').show();
+    $('.onlyDomain').hide();
   } else {
-    $('#div_loginNoIp').hide();
-    $('#div_passNoIp').hide();
-    $('#div_widgetNoIp').hide();
+    $('.onlyAccount').hide();
+    $('.onlyDomain').show();
   }
 });
 
@@ -42,14 +40,12 @@ function printEqLogic(_eqLogic) {
     _eqLogic.configuration = {};
   }
   if (_eqLogic.configuration.type == "account") {
-    $('#div_loginNoIp').show();
-    $('#div_passNoIp').show();
-    $('#div_widgetNoIp').show();
+    $('.onlyAccount').show();
+    $('.onlyDomain').hide();
   }
   if (_eqLogic.configuration.type == "domain") {
-    $('#div_loginNoIp').hide();
-    $('#div_passNoIp').hide();
-    $('#div_widgetNoIp').hide();
+    $('.onlyAccount').hide();
+    $('.onlyDomain').show();
   }
 }
 
@@ -106,26 +102,29 @@ function addCmdToTable(_cmd) {
 }
 
 $('.eqLogicAction[data-action=discover]').on('click', function (e) {
-  var what = e.currentTarget.dataset.action2 || null;
-  $.ajax({// fonction permettant de faire de l'ajax
-    type: "POST", // methode de transmission des données au fichier php
+  $('#div_alert').showAlert({ message: 'La synchronisation est en cours et peut prendre un certain temps. A suivre... ', level: 'warning' });
+  $.post({// fonction permettant de faire de l'ajax
     url: "plugins/noip/core/ajax/noip.ajax.php", // url du fichier php
     data: {
       action: "syncNoIp"
     },
-    dataType: 'json',
-    error: function (request, status, error) {
-      handleAjaxError(request, status, error);
-    },
-    success: function (data) { // si l'appel a bien fonctionné
-      if (data.state != 'ok') {
-        $('#div_alert').showAlert({ message: data.result, level: 'danger' });
-        return;
-      }
-      $('#div_alert').showAlert({ message: '{{Synchronisation réussie}}', level: 'success' });
-      location.reload();
-    }
+    dataType: 'json'
   });
 });
 
 $("#table_cmd").sortable({ axis: "y", cursor: "move", items: ".cmd", placeholder: "ui-state-highlight", tolerance: "intersect", forcePlaceholderSize: true });
+
+$('#bt_getScreenshot').on('click', function () {
+  $('#md_modal').dialog({ title: "{{Visualisation des screenshots}}" });
+  $('#md_modal').load('index.php?v=d&plugin=noip&modal=noip.screenshots').dialog('open');
+});
+
+$('.eqLogicAttr[data-l1key=configuration][data-l2key=makeIpRefresh]').on('change', function () {
+  var elt = $('.eqLogicAttr[data-l1key=configuration][data-l2key=ipLinked]');
+  if ($(this).is(':checked')) {
+    elt.show();
+  }
+  else {
+    elt.hide();
+  }
+});
