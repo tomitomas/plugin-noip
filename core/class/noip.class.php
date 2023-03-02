@@ -29,30 +29,67 @@ class noip extends eqLogic {
     /* * ***********************Methode static*************************** */
 
     /* * Fonction exécutée automatiquement toutes les 15 minutes par Jeedom */
-    public static function cron15() {
+    public static function createIpUpdateCron() {
+
+        $cron = cron::byClassAndFunction(__CLASS__, 'ipCheckAndUpdate');
+        if (!is_object($cron)) {
+            $cron = new cron();
+            $cron->setClass(__CLASS__);
+            $cron->setFunction('ipCheckAndUpdate');
+            $cron->setEnable(1);
+            $cron->setDeamon(0);
+            $cron->setSchedule('*/15 * * * *');
+            $cron->save();
+        }
+    }
+
+    public static function ipCheckAndUpdate() {
         noipTools::makeIpUpdate();
     }
 
-
-
     public static function autoCheck() {
-        foreach (self::byType('noip') as $eqLogic) {
+        foreach (self::byType(__CLASS__) as $eqLogic) {
             $eqLogic->scan(1);
         }
-        $cron = cron::byClassAndFunction('noip', 'autoCheck');
-        if (is_object($cron)) {
-            $randMinute = rand(3, 59);
-            $randHour = rand(2, 22);
-            $cronExpr = $randMinute . ' ' . $randHour . ' * * *';
-            $cron->setSchedule($cronExpr);
-            $cron->save();
+
+        $cron = self::createCheckCron();
+        self::updateNextCron($cron);
+    }
+
+    public static function updateNextCron($cron) {
+
+        foreach (self::byType(__CLASS__) as $eqLogic) {
+            if ($eqLogic->getConfiguration('type') != 'account') continue;
+
+            $nextRun = $cron->getNextRunDate();
+            $eqLogic->checkAndUpdateCmd('nextcheck', $nextRun);
+            self::debug("Prochaine vérification automatique pour " . $eqLogic->getName() . " : " . $nextRun);
         }
-        foreach (self::byType('noip') as $eqLogic) {
-            if ($eqLogic->getConfiguration('type') == 'account') {
-                $eqLogic->checkAndUpdateCmd('nextcheck', $cron->getNextRunDate());
-                self::debug("Prochaine vérification automatique pour " . $eqLogic->getName() . " : " . $cron->getNextRunDate());
-            }
+    }
+
+    public static function createCheckCron() {
+
+        $cron = cron::byClassAndFunction(__CLASS__, 'autoCheck');
+        if (!is_object($cron)) {
+            $cron = new cron();
+            $cron->setClass(__CLASS__);
+            $cron->setFunction('autoCheck');
+            $cron->setEnable(1);
+            $cron->setDeamon(0);
         }
+
+        $randMinute = rand(3, 59);
+
+        $hourStart = config::byKey('hourStart', __CLASS__, 3);
+        $hourEnd = config::byKey('hourEnd', __CLASS__, 22);
+        $randHour = rand($hourStart, $hourEnd);
+        // self::debug('checking rand between ' . $hourStart . ' and ' . $hourEnd . ' ==> ' . $randHour);
+
+        $cronExpr = $randMinute . ' ' . $randHour . ' * * *';
+        $cron->setSchedule($cronExpr);
+        $cron->save();
+
+        return $cron;
     }
 
     public static function nameExists($name) {
@@ -74,7 +111,6 @@ class noip extends eqLogic {
         } else {
             $name = $domain->hostname;
         }
-        self::info("Domaine créé : " . $name);
         $eqLogicClient->setName($name);
         $eqLogicClient->setIsEnable(1);
         $eqLogicClient->setIsVisible(0);
@@ -85,6 +121,7 @@ class noip extends eqLogic {
         $eqLogicClient->setConfiguration('login', $login);
         $eqLogicClient->setConfiguration('image', $eqLogicClient->getImage());
         $eqLogicClient->save();
+        self::info("Domaine créé : " . $name);
     }
 
     public static function syncNoIp() {
