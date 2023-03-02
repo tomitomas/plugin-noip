@@ -57,8 +57,9 @@ class noip extends eqLogic {
 
     public static function nameExists($name) {
         $allNoIp = eqLogic::byType('noip');
-        foreach ($allNoIp as $u) {
-            if ($name == $u->getName()) return true;
+        /** @var eqLogic $eq */
+        foreach ($allNoIp as $eq) {
+            if ($name == $eq->getName()) return true;
         }
         return false;
     }
@@ -77,7 +78,7 @@ class noip extends eqLogic {
         $eqLogicClient->setName($name);
         $eqLogicClient->setIsEnable(1);
         $eqLogicClient->setIsVisible(0);
-        $eqLogicClient->setLogicalId($name);
+        $eqLogicClient->setLogicalId($domain->hostname);
         $eqLogicClient->setEqType_name('noip');
         if ($defaultRoom) $eqLogicClient->setObject_id($defaultRoom);
         $eqLogicClient->setConfiguration('type', 'domain');
@@ -252,6 +253,7 @@ class noip extends eqLogic {
 
     public function recordData($obj) {
         foreach ($obj as $domain) {
+            self::debug("will update domain with following data : " . json_encode($domain));
             $existingDomain = noip::byLogicalId($domain->hostname, 'noip');
             if (!is_object($existingDomain)) {
                 // new domain
@@ -260,7 +262,6 @@ class noip extends eqLogic {
             }
             if (is_object($existingDomain)) {
                 if ($existingDomain->getIsEnable()) {
-                    self::debug("will update domain with following data : " . json_encode($domain));
                     $existingDomain->checkAndUpdateCmd('hostname', $domain->hostname);
                     $existingDomain->checkAndUpdateCmd('expiration', $domain->expirationdays);
                     $existingDomain->checkAndUpdateCmd('iplinked', $domain->ip);
