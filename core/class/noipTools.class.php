@@ -88,14 +88,14 @@ class noipTools {
             }
         }
 
-        noip::debug('all items to update => ' . json_encode($myUpdates));
+        noip::trace('all items to update => ' . json_encode($myUpdates));
         return $myUpdates;
     }
 
     public static function makeIpUpdate() {
         $allUpdates = self::getDomainToUpdate();
 
-        if (count($allUpdates) == 0) noip::debug(__('Pas de mise à jour à réaliser', __FILE__));
+        if (count($allUpdates) == 0) noip::debug(__('Pas de mise à jour d\'IP à réaliser', __FILE__));
 
         foreach ($allUpdates as $eqId => $infos) {
 
@@ -116,20 +116,20 @@ class noipTools {
                     $ddnsArr[] = $value;
                 }
 
-                // noip::debug('list of cmdId : ' . json_encode($cmdIpArr));
-                // noip::debug('list of ddnsArr : ' . json_encode($ddnsArr));
+                noip::trace('list of cmdId : ' . json_encode($cmdIpArr));
+                noip::trace('list of ddnsArr : ' . json_encode($ddnsArr));
 
                 $data = array(
                     "hostname" => implode(',', $ddnsArr),
                     "myip" => $ip,
                 );
 
-                noip::debug(' will make a curl request : ');
-                noip::debug('     data : ' . json_encode($data));
-                noip::debug('     headers : ' . json_encode($headers));
+                noip::trace(' will make a curl request : ');
+                noip::trace('     data : ' . json_encode($data));
+                noip::trace('     headers : ' . json_encode($headers));
 
                 $result = self::makeCurlRequest(self::$_noip_update, $headers, $data);
-                noip::debug(__('==>Update result : ', __FILE__) . $result);
+                noip::trace(__('==> Update result : ', __FILE__) . $result);
                 if (strpos($result, 'good') === false && strpos($result, 'nochg') === false) {
                     noip::error(__('Erreur de mise à jour : ', __FILE__) . $result);
                     continue;

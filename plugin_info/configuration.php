@@ -28,8 +28,12 @@ if (!isConnect('admin')) {
 			<i class="fa fa-list-alt"></i> {{Paramètres}}
 		</legend>
 		<div class="form-group">
-			<label class="col-sm-4 control-label">{{Renouveler les noms de domaine quand ceux-ci arrivent à expiration dans : }}</label>
-			<div class="col-sm-2">
+			<label class="col-sm-4 control-label">{{Renouvellement auto dès }}
+				<sup>
+					<i class="fas fa-question-circle floatright" title="Les noms de domaine peuvent être automatiquement renouvellés lorsqu'ils arrivent à expiration dans les X jours"></i>
+				</sup>
+			</label>
+			<div class=" col-lg-3">
 				<select id="sel_days" class="configKey form-control" data-l1key="renewThreshold">
 					<option value="7">7 {{jours}}</option>
 					<option value="6">6 {{jours}}</option>
@@ -56,5 +60,70 @@ if (!isConnect('admin')) {
 				</select>
 			</div>
 		</div>
+
+		<div class="form-group">
+			<label class="col-lg-4 control-label">{{Plage horaire script}}
+				<sup>
+					<i class="fas fa-question-circle floatright" title="Définissez les bornes horaires min et max pour que le rafraichissement se fasse"></i>
+				</sup>
+			</label>
+			<div class="col-lg-1">
+				<select class="form-control configKey" data-l1key="hourStart">
+					<option value="3" selected>3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+				</select>
+			</div>
+			<span class="col-lg-1">
+				{{et}}
+			</span>
+			<div class=" col-lg-1">
+				<select class="form-control configKey" data-l1key="hourEnd">
+					<option value="14">14</option>
+					<option value="15">15</option>
+					<option value="16">16</option>
+					<option value="17">17</option>
+					<option value="18">18</option>
+					<option value="19">19</option>
+					<option value="20">20</option>
+					<option value="21">21</option>
+					<option value="22" selected>22</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-lg-4 control-label">{{Niveau de log Python}}
+				<sup>
+					<i class="fas fa-question-circle floatright" title="Vous pouvez choisir un autre niveau de log pour le script Python"></i>
+				</sup>
+			</label>
+			<div class="col-lg-3">
+				<select class="form-control configKey" data-l1key="daemonLog">
+					<option value="parent">Même que le plugin</option>
+					<option value="100">Debug (à utiliser seulement à la demande du dev)</option>
+					<option value="200" selected>Infos</option>
+					<option value="300">Warning</option>
+					<option value="400">Erreur</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-lg-4 control-label">{{Plugin Verbose}}
+				<sup>
+					<i class="fas fa-question-circle floatright" title="Affiche plus de logs que DEBUG"></i>
+				</sup>
+			</label>
+			<div class="col-lg-3">
+				<input type="checkbox" class="configKey" data-l1key="traceLog" />
+			</div>
+		</div>
+
 	</fieldset>
 </form>
