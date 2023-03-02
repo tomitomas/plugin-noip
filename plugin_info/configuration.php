@@ -60,22 +60,7 @@ if (!isConnect('admin')) {
 				</select>
 			</div>
 		</div>
-		<div class="form-group">
-			<label class="col-lg-4 control-label">{{Niveau de log Python}}
-				<sup>
-					<i class="fas fa-question-circle floatright" title="Vous pouvez choisir un autre niveau de log pour le script Python"></i>
-				</sup>
-			</label>
-			<div class="col-lg-3">
-				<select class="form-control configKey" data-l1key="daemonLog">
-					<option value="parent">Même que le plugin</option>
-					<option value="100">Debug (à utiliser seulement à la demande du dev)</option>
-					<option value="200" selected>Infos</option>
-					<option value="300">Warning</option>
-					<option value="400">Erreur</option>
-				</select>
-			</div>
-		</div>
+
 		<div class="form-group">
 			<label class="col-lg-4 control-label">{{Plage horaire script}}
 				<sup>
@@ -111,5 +96,34 @@ if (!isConnect('admin')) {
 				</select>
 			</div>
 		</div>
+
+		<div class="form-group">
+			<label class="col-lg-4 control-label">{{Niveau de log Python}}
+				<sup>
+					<i class="fas fa-question-circle floatright" title="Vous pouvez choisir un autre niveau de log pour le script Python"></i>
+				</sup>
+			</label>
+			<div class="col-lg-3">
+				<select class="form-control configKey" data-l1key="daemonLog">
+					<option value="parent">Même que le plugin</option>
+					<option value="100">Debug (à utiliser seulement à la demande du dev)</option>
+					<option value="200" selected>Infos</option>
+					<option value="300">Warning</option>
+					<option value="400">Erreur</option>
+				</select>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<label class="col-lg-4 control-label">{{Plugin Verbose}}
+				<sup>
+					<i class="fas fa-question-circle floatright" title="Affiche plus de logs que DEBUG"></i>
+				</sup>
+			</label>
+			<div class="col-lg-3">
+				<input type="checkbox" class="configKey" data-l1key="traceLog" />
+			</div>
+		</div>
+
 	</fieldset>
 </form>

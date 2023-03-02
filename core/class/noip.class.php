@@ -125,7 +125,7 @@ class noip extends eqLogic {
     }
 
     public static function syncNoIp() {
-        self::info("Debug de synchronisation");
+        self::info("Début de synchronisation");
 
         $eqLogics = eqLogic::byType('noip');
         /** @var noip $eqLogic */
@@ -262,7 +262,7 @@ class noip extends eqLogic {
 
     public static function refreshInfoEq($_options) {
         /** @var noip $eqLogic */
-        self::debug('starting refreshInfoEq - ' . json_encode($_options));
+        self::trace('starting refreshInfoEq - ' . json_encode($_options));
         $eqId = $_options['eqId'] ?? null;
         $eqLogic = self::byId($eqId);
         if (!is_object($eqLogic)) {
@@ -270,7 +270,7 @@ class noip extends eqLogic {
             return;
         }
 
-        self::debug('running scan');
+        self::trace('running scan');
         $eqLogic->scan(1);
     }
 
@@ -282,7 +282,7 @@ class noip extends eqLogic {
         } else {
             $this->checkAndUpdateCmd('refreshStatus', 'error');
             if ($this->getConfiguration('refreshOnError', 0)) {
-                self::debug('Set a new refres in 5min');
+                self::debug('Set a new refresh in 5min');
                 self::executeAsync('refreshInfoEq', array("eqId" => $this->getId()), date('Y-m-d H:i:s', strtotime("+5 minutes")));
             }
         }
@@ -335,8 +335,8 @@ class noip extends eqLogic {
         if (!$autoRemove) return;
 
         $allEq = self::getAllDomainsName();
-        self::debug('All existing items in plugin : ' . json_encode($allEq));
-        self::debug('Items currently existing in NoIp website : ' . json_encode($existingItems));
+        self::trace('All existing items in plugin : ' . json_encode($allEq));
+        self::trace('Items currently existing in NoIp website : ' . json_encode($existingItems));
 
         foreach ($existingItems as $item) {
             if (($key = array_search($item, $allEq)) !== false) {
