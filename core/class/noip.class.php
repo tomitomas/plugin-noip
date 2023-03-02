@@ -191,15 +191,19 @@ class noip extends eqLogic {
         array_map('unlink', glob("$noip_path/data/*.png"));
         array_map('unlink', glob("$noip_path/data/*.json"));
 
-        $loglevel = 0;
-        if (log::convertLogLevel(log::getLogLevel('noip')) == "debug") {
-            $loglevel = 2;
-        }
+        $daemonLogConfig = config::byKey('daemonLog', __CLASS__, '200');
+        $daemonLog = ($daemonLogConfig == 'parent') ? log::getLogLevel(__CLASS__) : $daemonLogConfig;
 
-        $cmd = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "' . $password . '" ' . config::byKey('renewThreshold', 'noip', 7) . ' ' . $renew . ' ' . $noip_path . ' ' . $loglevel;
-        self::info('Lancement script No-Ip : ' . str_replace($password, '*******', $cmd));
+        $cmd = 'python3 ' . $noip_path . '/resources/noip-renew.py ';
+        $cmd .= ' --loglevel ' . log::convertLogLevel($daemonLog);
+        $cmd .= ' --user ' . $login;
+        $cmd .= ' --pwd "' . $password . '"';
+        $cmd .= ' --threshold ' . config::byKey('renewThreshold', 'noip', 7);
+        $cmd .= ' --renew ' . $renew;
+        $cmd .= ' --noip_path ' . $noip_path;
+        self::info('Starting daemon with cmd >>' . str_replace($password, str_repeat('*', strlen($password)), $cmd) . '<<');
+        exec($cmd . ' >> ' . log::getPathToLog(__CLASS__) . ' 2>&1');
 
-        exec($cmd . ' >> ' . log::getPathToLog('noip') . ' 2>&1');
         $string = file_get_contents($noip_path . '/data/output.json');
         self::debug($this->getHumanName() . ' file content: ' . $string);
         if ($string === false) {

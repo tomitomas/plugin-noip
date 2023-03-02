@@ -25,13 +25,14 @@ import re
 import base64
 import json
 import logging
+import argparse
 
 
 class jeedom_utils:
     @staticmethod
     def convert_log_level(level="error"):
         LEVELS = {
-            "debug": logging.info,
+            "debug": logging.DEBUG,
             "info": logging.INFO,
             "notice": logging.WARNING,
             "warning": logging.WARNING,
@@ -66,7 +67,6 @@ class Robot:
         self.renew = renew
         self.rootpath = rootpath
         self.browser = self.init_browser()
-        # self.logger = Logger(debug)
         self.data = []
 
     @staticmethod
@@ -150,6 +150,8 @@ class Robot:
                     )
                 raise Exception("Login button not found")
 
+        if self.debug > 1:
+            logging.debug("-- sleeping 3")
         time.sleep(3)
         if self.debug > 1:
             self.browser.save_screenshot(self.rootpath + "/data/debug2.png")
@@ -158,6 +160,8 @@ class Robot:
         count = 0
 
         self.open_hosts_page()
+        if self.debug > 1:
+            logging.debug("-- sleeping 3")
         time.sleep(3)
         iteration = 1
 
@@ -187,7 +191,7 @@ class Robot:
             renewed = "ok"
             if expiration_days <= 7:
                 renewed = "warning"
-            if self.renew > 0 and expiration_days < self.threshold:
+            if self.renew > 0 and expiration_days <= self.threshold:
                 renewed = self.update_host(host_button, host_name)
                 if renewed == "ok":
                     expiration_days = self.get_host_expiration_days(
@@ -223,6 +227,8 @@ class Robot:
     def update_host(self, host_button, host_name):
         logging.info("Updating {host_name}".format(host_name=host_name))
         host_button.click()
+        if self.debug > 1:
+            logging.debug("-- sleeping 3")
         time.sleep(3)
         intervention = False
         try:
@@ -333,7 +339,7 @@ class Robot:
 
     def run(self):
         rc = 0
-        logging.info("Debug level: {debug}".format(debug=str(self.debug)))
+        logging.info("Start running process")
         try:
             self.login()
             if not self.update_hosts():
@@ -353,60 +359,47 @@ class Robot:
 
 def main(argv=None):
     try:
-        jeedom_utils.set_log_level("info")
-        logging.info("Start running process")
 
-        (
-            noip_username,
-            noip_password,
-            noip_threshold,
-            noip_renew,
-            noip_rootpath,
-            debug,
-        ) = get_args_values(argv)
+        parser = argparse.ArgumentParser(description="Python for NoIp plugin")
+        parser.add_argument("--loglevel", help="Log Level for the script", type=str)
+        parser.add_argument("--user", help="username", type=str)
+        parser.add_argument("--pwd", help="password", type=str)
+        parser.add_argument(
+            "--threshold", help="Threshold to renew the domain", type=int
+        )
+        parser.add_argument("--renew", help="Renew enable", type=int)
+        parser.add_argument("--noip_path", help="path to the plugin", type=str)
+        # parser.add_argument("--pid", help="Value to write", type=str)
+        args = parser.parse_args()
+
+        _noip_username = args.user
+        _noip_password = args.pwd
+        _noip_threshold = args.threshold
+        _noip_renew = args.renew
+        _noip_rootpath = args.noip_path
+        _debug = args.loglevel
+
+        jeedom_utils.set_log_level(_debug)
+
+        logging.info("Log level : " + str(_debug))
+        logging.info("User : " + str(_noip_username))
+        logging.info("Threshold : " + str(_noip_threshold))
+        logging.info("Renew : " + str(_noip_renew))
 
         return (
             Robot(
-                noip_username,
-                noip_password,
-                noip_threshold,
-                noip_renew,
-                noip_rootpath,
-                debug,
+                _noip_username,
+                _noip_password,
+                _noip_threshold,
+                _noip_renew,
+                _noip_rootpath,
+                2 if _debug == "debug" else 0,
             )
         ).run()
     except TimeoutException as ex:
         logging.error("Timeout has been thrown. " + str(ex))
     except Exception as ex:
         logging.error("Exception has been thrown. " + str(ex))
-
-
-def get_args_values(argv):
-
-    if argv is None:
-        argv = sys.argv
-    if len(argv) < 3:
-        print(
-            "Usage: <noip_username> <noip_password> <threshold> <renew> <rootpath> [<debug-level>]"
-        )
-        sys.exit(1)
-
-    noip_username = argv[1]
-    noip_password = argv[2]
-    noip_threshold = int(argv[3])
-    noip_renew = int(argv[4])
-    noip_rootpath = argv[5]
-    debug = 1
-    if len(argv) > 6:
-        debug = int(argv[6])
-    return (
-        noip_username,
-        noip_password,
-        noip_threshold,
-        noip_renew,
-        noip_rootpath,
-        debug,
-    )
 
 
 if __name__ == "__main__":
