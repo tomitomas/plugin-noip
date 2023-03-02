@@ -251,7 +251,22 @@ class noip extends eqLogic {
         }
     }
 
+    public static function getAllDomainsName() {
+        $result = array();
+
+        $eqLogics = eqLogic::byType('noip');
+        /** @var noip $eqLogic */
+        foreach ($eqLogics as $eqLogic) {
+            if ($eqLogic->getConfiguration('type', '') == 'account') continue;
+
+            $result[] = $eqLogic->getLogicalId();
+        }
+
+        return $result;
+    }
+
     public function recordData($obj) {
+        $allItems = array();
         foreach ($obj as $domain) {
             self::debug("will update domain with following data : " . json_encode($domain));
             $existingDomain = noip::byLogicalId($domain->hostname, 'noip');
@@ -271,7 +286,33 @@ class noip extends eqLogic {
                 }
                 $existingDomain->setConfiguration('parentId', $this->getId());
                 $existingDomain->save(true);
+                $allItems[] = $domain->hostname;
             }
+        }
+
+        $this->removeUnexistingDomain($allItems);
+    }
+
+    public function removeUnexistingDomain($existingItems) {
+        $autoRemove = $this->getConfiguration('autoRemove', false);
+        if (!$autoRemove) return;
+
+        $allEq = self::getAllDomainsName();
+        self::debug('All existing items in plugin : ' . json_encode($allEq));
+        self::debug('Items currently existing in NoIp website : ' . json_encode($existingItems));
+
+        foreach ($existingItems as $item) {
+            if (($key = array_search($item, $allEq)) !== false) {
+                unset($allEq[$key]);
+            }
+        }
+
+        foreach ($allEq as $eq) {
+            self::info('Domain "' . $eq . '" does not exist anymore - autoRemove is on -> removing object');
+
+            $domain = noip::byLogicalId($eq, __CLASS__);
+            /** @var noip $remove */
+            if (is_object($domain)) $domain->remove();
         }
     }
 
