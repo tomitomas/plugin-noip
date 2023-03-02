@@ -28,8 +28,12 @@ if (!isConnect('admin')) {
 			<i class="fa fa-list-alt"></i> {{Paramètres}}
 		</legend>
 		<div class="form-group">
-			<label class="col-sm-4 control-label">{{Renouveler les noms de domaine quand ceux-ci arrivent à expiration dans : }}</label>
-			<div class="col-sm-2">
+			<label class="col-sm-4 control-label">{{Renouvellement auto dès }}
+				<sup>
+					<i class="fas fa-question-circle floatright" title="Les noms de domaine peuvent être automatiquement renouvellés lorsqu'ils arrivent à expiration dans les X jours"></i>
+				</sup>
+			</label>
+			<div class=" col-sm-2">
 				<select id="sel_days" class="configKey form-control" data-l1key="renewThreshold">
 					<option value="7">7 {{jours}}</option>
 					<option value="6">6 {{jours}}</option>
@@ -53,6 +57,22 @@ if (!isConnect('admin')) {
 					}
 					echo $options;
 					?>
+				</select>
+			</div>
+		</div>
+		<div class="form-group">
+			<label class="col-lg-4 control-label">{{Niveau de log Python}}
+				<sup>
+					<i class="fas fa-question-circle floatright" title="Vous pouvez choisir un autre niveau de log pour le script Python"></i>
+				</sup>
+			</label>
+			<div class="col-lg-3">
+				<select class="form-control configKey" data-l1key="daemonLog">
+					<option value="parent">Même que le plugin</option>
+					<option value="100">Debug (à utiliser seulement à la demande du dev)</option>
+					<option value="200" selected>Infos</option>
+					<option value="300">Warning</option>
+					<option value="400">Erreur</option>
 				</select>
 			</div>
 		</div>
