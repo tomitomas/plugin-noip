@@ -33,7 +33,7 @@ if (!isConnect('admin')) {
 					<i class="fas fa-question-circle floatright" title="Les noms de domaine peuvent être automatiquement renouvellés lorsqu'ils arrivent à expiration dans les X jours"></i>
 				</sup>
 			</label>
-			<div class=" col-sm-2">
+			<div class=" col-lg-3">
 				<select id="sel_days" class="configKey form-control" data-l1key="renewThreshold">
 					<option value="7">7 {{jours}}</option>
 					<option value="6">6 {{jours}}</option>
