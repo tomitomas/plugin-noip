@@ -24,7 +24,7 @@ class noipTools {
     public static $_ip_url =  'https://ipecho.net/plain';
     public static $_noip_update =  'http://dynupdate.no-ip.com/nic/update';
 
-    public function makeCurlRequest(string $url, array $headers = array(), array $data = array(), string $type = 'GET') {
+    public function makeCurlRequest(string $url, array $headers = array(), array $data = array(), array $credentials = array('', ''), string $type = 'GET') {
 
         try {
             if (count($data) > 0 && $type == 'GET') {
@@ -32,7 +32,8 @@ class noipTools {
                 $url .= '?' . $encodedData;
             }
 
-            $request_http = new com_http($url);
+            list($username, $pwd) = $credentials;
+            $request_http = new com_http($url, $username, $pwd);
 
             if (count($headers) > 0) {
                 $request_http->setHeader($headers);
@@ -105,8 +106,8 @@ class noipTools {
                 continue;
             }
 
-            list($user, $pwd) = self::getCredentials($eqId);
-            $headers = self::getHeadersNoIp($user, $pwd);
+            $credentials = self::getCredentials($eqId);
+            $headers = self::getHeadersNoIp($credentials[0] ?? '');
 
             foreach ($infos as $ip => $ddns) {
                 $ddnsArr = array();
@@ -128,7 +129,7 @@ class noipTools {
                 noip::trace('     data : ' . json_encode($data));
                 noip::trace('     headers : ' . json_encode($headers));
 
-                $result = self::makeCurlRequest(self::$_noip_update, $headers, $data);
+                $result = self::makeCurlRequest(self::$_noip_update, $headers, $data, $credentials);
                 noip::trace(__('==> Update result : ', __FILE__) . $result);
                 if (strpos($result, 'good') === false && strpos($result, 'nochg') === false) {
                     noip::error(__('Erreur de mise à jour : ', __FILE__) . $result);
@@ -153,15 +154,12 @@ class noipTools {
         return (filter_var($ip, FILTER_VALIDATE_IP) !== false);
     }
 
-    public static function getHeadersNoIp($user, $pwd) {
+    public static function getHeadersNoIp($user) {
         if (strlen($user) > 50) noip::warning(__('Le login est supérieur à 50 caractères, la mise à jour risque de ne pas fonctionner', __FILE__));
-
-        $cred = base64_encode($user . ':' . $pwd);
 
         return array(
             "content-type" => "application/json",
-            "User-Agent" => "noipJeedom/0.0.1 " . $user,
-            "Authorization" => "Basic " . $cred
+            "User-Agent" => "noipJeedom/0.0.1 " . $user
         );
     }
 
