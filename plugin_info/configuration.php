@@ -69,7 +69,7 @@ if (!isConnect('admin')) {
 			</label>
 			<div class="col-lg-1">
 				<select class="form-control configKey" data-l1key="hourStart">
-					<option value="3" selected>3</option>
+					<option value="3">3</option>
 					<option value="4">4</option>
 					<option value="5">5</option>
 					<option value="6">6</option>
@@ -92,7 +92,7 @@ if (!isConnect('admin')) {
 					<option value="19">19</option>
 					<option value="20">20</option>
 					<option value="21">21</option>
-					<option value="22" selected>22</option>
+					<option value="22">22</option>
 				</select>
 			</div>
 		</div>
@@ -107,7 +107,7 @@ if (!isConnect('admin')) {
 				<select class="form-control configKey" data-l1key="daemonLog">
 					<option value="parent">Même que le plugin</option>
 					<option value="100">Debug (à utiliser seulement à la demande du dev)</option>
-					<option value="200" selected>Infos</option>
+					<option value="200">Infos</option>
 					<option value="300">Warning</option>
 					<option value="400">Erreur</option>
 				</select>
