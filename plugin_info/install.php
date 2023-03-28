@@ -19,50 +19,35 @@
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 function noip_install() {
-	$threshold = config::byKey('renewThreshold', 'noip');
-	if (empty($threshold)) {
+	$threshold = config::byKey('renewThreshold', 'noip', null);
+	if (is_null($threshold)) {
 		config::save('renewThreshold', 7, 'noip');
 	}
 
-	$cron = cron::byClassAndFunction('noip', 'autoCheck');
-	if (!is_object($cron)) {
-		$randMinute = rand(3, 59);
-		$randHour = rand(2, 22);
-		$cronExpr = $randMinute . ' ' . $randHour . ' * * *';
-		$cron = new cron();
-		$cron->setClass('noip');
-		$cron->setFunction('autoCheck');
-		$cron->setEnable(1);
-		$cron->setDeamon(0);
-		$cron->setSchedule($cronExpr);
-		$cron->save();
-	}
+	noip::createCheckCron();
+	noip::createIpUpdateCron();
 }
 
 function noip_update() {
-	$threshold = config::byKey('renewThreshold', 'noip');
-	if (empty($threshold)) {
+	$threshold = config::byKey('renewThreshold', 'noip', null);
+	if (is_null($threshold)) {
 		config::save('renewThreshold', 7, 'noip');
 	}
-	$cron = cron::byClassAndFunction('noip', 'autoCheck');
-	if (is_object($cron)) {
-		$randMinute = rand(3, 59);
-		$randHour = rand(2, 22);
-		$cronExpr = $randMinute . ' ' . $randHour . ' * * *';
-		$cron->setSchedule($cronExpr);
-		$cron->save();
-	}
-	foreach (eqLogic::byType('noip') as $eqLogic) {
-		if ($eqLogic->getConfiguration('type') == 'account') {
-			$eqLogic->checkAndUpdateCmd('nextcheck', $cron->getNextRunDate());
-			noip::debug("Prochaine vérification automatique pour " . $eqLogic->getName() . " : " . $cron->getNextRunDate());
-		}
-		$eqLogic->save();
-	}
+
+	noip::createIpUpdateCron();
+
+	$cron = noip::createCheckCron();
+	noip::updateNextCron($cron);
 }
 
 function noip_remove() {
 	$cron = cron::byClassAndFunction('noip', 'autoCheck');
+	if (is_object($cron)) {
+		$cron->stop();
+		$cron->remove();
+	}
+
+	$cron = cron::byClassAndFunction('noip', 'ipCheckAndUpdate');
 	if (is_object($cron)) {
 		$cron->stop();
 		$cron->remove();

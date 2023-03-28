@@ -29,36 +29,74 @@ class noip extends eqLogic {
     /* * ***********************Methode static*************************** */
 
     /* * Fonction exécutée automatiquement toutes les 15 minutes par Jeedom */
-    public static function cron15() {
+    public static function createIpUpdateCron() {
+
+        $cron = cron::byClassAndFunction(__CLASS__, 'ipCheckAndUpdate');
+        if (!is_object($cron)) {
+            $cron = new cron();
+            $cron->setClass(__CLASS__);
+            $cron->setFunction('ipCheckAndUpdate');
+            $cron->setEnable(1);
+            $cron->setDeamon(0);
+            $cron->setSchedule('*/15 * * * *');
+            $cron->save();
+        }
+    }
+
+    public static function ipCheckAndUpdate() {
         noipTools::makeIpUpdate();
     }
 
-
-
     public static function autoCheck() {
-        foreach (self::byType('noip') as $eqLogic) {
+        foreach (self::byType(__CLASS__) as $eqLogic) {
             $eqLogic->scan(1);
         }
-        $cron = cron::byClassAndFunction('noip', 'autoCheck');
-        if (is_object($cron)) {
-            $randMinute = rand(3, 59);
-            $randHour = rand(2, 22);
-            $cronExpr = $randMinute . ' ' . $randHour . ' * * *';
-            $cron->setSchedule($cronExpr);
-            $cron->save();
+
+        $cron = self::createCheckCron();
+        self::updateNextCron($cron);
+    }
+
+    public static function updateNextCron($cron) {
+
+        foreach (self::byType(__CLASS__) as $eqLogic) {
+            if ($eqLogic->getConfiguration('type') != 'account') continue;
+
+            $nextRun = $cron->getNextRunDate();
+            $eqLogic->checkAndUpdateCmd('nextcheck', $nextRun);
+            self::debug("Prochaine vérification automatique pour " . $eqLogic->getName() . " : " . $nextRun);
         }
-        foreach (self::byType('noip') as $eqLogic) {
-            if ($eqLogic->getConfiguration('type') == 'account') {
-                $eqLogic->checkAndUpdateCmd('nextcheck', $cron->getNextRunDate());
-                self::debug("Prochaine vérification automatique pour " . $eqLogic->getName() . " : " . $cron->getNextRunDate());
-            }
+    }
+
+    public static function createCheckCron() {
+
+        $cron = cron::byClassAndFunction(__CLASS__, 'autoCheck');
+        if (!is_object($cron)) {
+            $cron = new cron();
+            $cron->setClass(__CLASS__);
+            $cron->setFunction('autoCheck');
+            $cron->setEnable(1);
+            $cron->setDeamon(0);
         }
+
+        $randMinute = rand(3, 59);
+
+        $hourStart = config::byKey('hourStart', __CLASS__, 3);
+        $hourEnd = config::byKey('hourEnd', __CLASS__, 22);
+        $randHour = rand($hourStart, $hourEnd);
+        // self::debug('checking rand between ' . $hourStart . ' and ' . $hourEnd . ' ==> ' . $randHour);
+
+        $cronExpr = $randMinute . ' ' . $randHour . ' * * *';
+        $cron->setSchedule($cronExpr);
+        $cron->save();
+
+        return $cron;
     }
 
     public static function nameExists($name) {
         $allNoIp = eqLogic::byType('noip');
-        foreach ($allNoIp as $u) {
-            if ($name == $u->getName()) return true;
+        /** @var eqLogic $eq */
+        foreach ($allNoIp as $eq) {
+            if ($name == $eq->getName()) return true;
         }
         return false;
     }
@@ -73,21 +111,21 @@ class noip extends eqLogic {
         } else {
             $name = $domain->hostname;
         }
-        self::info("Domaine créé : " . $name);
         $eqLogicClient->setName($name);
         $eqLogicClient->setIsEnable(1);
         $eqLogicClient->setIsVisible(0);
-        $eqLogicClient->setLogicalId($name);
+        $eqLogicClient->setLogicalId($domain->hostname);
         $eqLogicClient->setEqType_name('noip');
         if ($defaultRoom) $eqLogicClient->setObject_id($defaultRoom);
         $eqLogicClient->setConfiguration('type', 'domain');
         $eqLogicClient->setConfiguration('login', $login);
         $eqLogicClient->setConfiguration('image', $eqLogicClient->getImage());
         $eqLogicClient->save();
+        self::info("Domaine créé : " . $name);
     }
 
     public static function syncNoIp() {
-        self::info("Debug de synchronisation");
+        self::info("Début de synchronisation");
 
         $eqLogics = eqLogic::byType('noip');
         /** @var noip $eqLogic */
@@ -191,15 +229,19 @@ class noip extends eqLogic {
         array_map('unlink', glob("$noip_path/data/*.png"));
         array_map('unlink', glob("$noip_path/data/*.json"));
 
-        $loglevel = 0;
-        if (log::convertLogLevel(log::getLogLevel('noip')) == "debug") {
-            $loglevel = 2;
-        }
+        $daemonLogConfig = config::byKey('daemonLog', __CLASS__, '200');
+        $daemonLog = ($daemonLogConfig == 'parent') ? log::getLogLevel(__CLASS__) : $daemonLogConfig;
 
-        $cmd = 'sudo python3 ' . $noip_path . '/resources/noip-renew.py ' . $login . ' "' . $password . '" ' . config::byKey('renewThreshold', 'noip', 7) . ' ' . $renew . ' ' . $noip_path . ' ' . $loglevel;
-        self::info('Lancement script No-Ip : ' . str_replace($password, '*******', $cmd));
+        $cmd = 'python3 ' . $noip_path . '/resources/noip-renew.py ';
+        $cmd .= ' --loglevel ' . log::convertLogLevel($daemonLog);
+        $cmd .= ' --user ' . $login;
+        $cmd .= ' --pwd "' . $password . '"';
+        $cmd .= ' --threshold ' . config::byKey('renewThreshold', 'noip', 7);
+        $cmd .= ' --renew ' . $renew;
+        $cmd .= ' --noip_path ' . $noip_path;
+        self::info('Starting daemon with cmd >>' . str_replace($password, str_repeat('*', strlen($password)), $cmd) . '<<');
+        exec($cmd . ' >> ' . log::getPathToLog(__CLASS__) . ' 2>&1');
 
-        exec($cmd . ' >> ' . log::getPathToLog('noip') . ' 2>&1');
         $string = file_get_contents($noip_path . '/data/output.json');
         self::debug($this->getHumanName() . ' file content: ' . $string);
         if ($string === false) {
@@ -220,7 +262,7 @@ class noip extends eqLogic {
 
     public static function refreshInfoEq($_options) {
         /** @var noip $eqLogic */
-        self::debug('starting refreshInfoEq - ' . json_encode($_options));
+        self::trace('starting refreshInfoEq - ' . json_encode($_options));
         $eqId = $_options['eqId'] ?? null;
         $eqLogic = self::byId($eqId);
         if (!is_object($eqLogic)) {
@@ -228,7 +270,7 @@ class noip extends eqLogic {
             return;
         }
 
-        self::debug('running scan');
+        self::trace('running scan');
         $eqLogic->scan(1);
     }
 
@@ -240,14 +282,30 @@ class noip extends eqLogic {
         } else {
             $this->checkAndUpdateCmd('refreshStatus', 'error');
             if ($this->getConfiguration('refreshOnError', 0)) {
-                self::debug('Set a new refres in 5min');
+                self::debug('Set a new refresh in 5min');
                 self::executeAsync('refreshInfoEq', array("eqId" => $this->getId()), date('Y-m-d H:i:s', strtotime("+5 minutes")));
             }
         }
     }
 
+    public static function getAllDomainsName() {
+        $result = array();
+
+        $eqLogics = eqLogic::byType('noip');
+        /** @var noip $eqLogic */
+        foreach ($eqLogics as $eqLogic) {
+            if ($eqLogic->getConfiguration('type', '') == 'account') continue;
+
+            $result[] = $eqLogic->getLogicalId();
+        }
+
+        return $result;
+    }
+
     public function recordData($obj) {
+        $allItems = array();
         foreach ($obj as $domain) {
+            self::debug("will update domain with following data : " . json_encode($domain));
             $existingDomain = noip::byLogicalId($domain->hostname, 'noip');
             if (!is_object($existingDomain)) {
                 // new domain
@@ -256,7 +314,6 @@ class noip extends eqLogic {
             }
             if (is_object($existingDomain)) {
                 if ($existingDomain->getIsEnable()) {
-                    self::debug("will update domain with following data : " . json_encode($domain));
                     $existingDomain->checkAndUpdateCmd('hostname', $domain->hostname);
                     $existingDomain->checkAndUpdateCmd('expiration', $domain->expirationdays);
                     $existingDomain->checkAndUpdateCmd('iplinked', $domain->ip);
@@ -266,7 +323,33 @@ class noip extends eqLogic {
                 }
                 $existingDomain->setConfiguration('parentId', $this->getId());
                 $existingDomain->save(true);
+                $allItems[] = $domain->hostname;
             }
+        }
+
+        $this->removeUnexistingDomain($allItems);
+    }
+
+    public function removeUnexistingDomain($existingItems) {
+        $autoRemove = $this->getConfiguration('autoRemove', false);
+        if (!$autoRemove) return;
+
+        $allEq = self::getAllDomainsName();
+        self::trace('All existing items in plugin : ' . json_encode($allEq));
+        self::trace('Items currently existing in NoIp website : ' . json_encode($existingItems));
+
+        foreach ($existingItems as $item) {
+            if (($key = array_search($item, $allEq)) !== false) {
+                unset($allEq[$key]);
+            }
+        }
+
+        foreach ($allEq as $eq) {
+            self::info('Domain "' . $eq . '" does not exist anymore - autoRemove is on -> removing object');
+
+            $domain = noip::byLogicalId($eq, __CLASS__);
+            /** @var noip $remove */
+            if (is_object($domain)) $domain->remove();
         }
     }
 
