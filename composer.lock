@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c3c46c6bc21f2484a8aee127dd2ce6f0",
+    "content-hash": "cc650ede7bd35333ff9eae49f958a6a6",
     "packages": [
         {
             "name": "tomitomas/jeedom-tools",
-            "version": "0.3",
+            "version": "0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tomitomas/jeedom-tools.git",
-                "reference": "8f7d4fe048313088f9105c3814f5148bb9fd0e8d"
+                "reference": "8360eac5b73efecb4fde83154836a291377efe1d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tomitomas/jeedom-tools/zipball/8f7d4fe048313088f9105c3814f5148bb9fd0e8d",
-                "reference": "8f7d4fe048313088f9105c3814f5148bb9fd0e8d",
+                "url": "https://api.github.com/repos/tomitomas/jeedom-tools/zipball/8360eac5b73efecb4fde83154836a291377efe1d",
+                "reference": "8360eac5b73efecb4fde83154836a291377efe1d",
                 "shasum": ""
             },
             "type": "library",
@@ -38,9 +38,9 @@
             "description": "Generic lib for jeedom plugins",
             "support": {
                 "issues": "https://github.com/tomitomas/jeedom-tools/issues",
-                "source": "https://github.com/tomitomas/jeedom-tools/tree/0.3"
+                "source": "https://github.com/tomitomas/jeedom-tools/tree/0.4"
             },
-            "time": "2023-02-04T22:06:19+00:00"
+            "time": "2023-04-05T09:26:02+00:00"
         }
     ],
     "packages-dev": [],

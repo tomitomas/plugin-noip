@@ -353,37 +353,6 @@ class noip extends eqLogic {
         }
     }
 
-    /**
-     * From @Mips2648
-     *
-     * @param string $_method
-     * @param array|null $_option
-     * @param string $_date
-     * @return void
-     */
-    public static function executeAsync(string $_method, $_option = null, $_date = 'now') {
-        if (!method_exists(__CLASS__, $_method)) {
-            throw new InvalidArgumentException("Method provided for executeAsync does not exist: {$_method}");
-        }
-
-        $cron = new cron();
-        $cron->setClass(__CLASS__);
-        $cron->setFunction($_method);
-        if (isset($_option)) {
-            $cron->setOption($_option);
-        }
-        $cron->setOnce(1);
-        $scheduleTime = strtotime($_date);
-        $cron->setSchedule(cron::convertDateToCron($scheduleTime));
-        $cron->save();
-        if ($scheduleTime <= strtotime('now')) {
-            $cron->run();
-            log::add(__CLASS__, 'debug', "Task '{$_method}' executed now");
-        } else {
-            log::add(__CLASS__, 'debug', "Task '{$_method}' scheduled at {$_date}");
-        }
-    }
-
     public function toHtml($_version = 'dashboard') {
         if ($this->getConfiguration('widgetTemplate') != 1 || $this->getConfiguration('type') == 'domain') {
             return parent::toHtml($_version);

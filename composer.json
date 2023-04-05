@@ -8,7 +8,7 @@
         }
     ],
     "require": {
-        "tomitomas/jeedom-tools": "~0.3"
+        "tomitomas/jeedom-tools": "~0.4"
     },
     "config": {
         "vendor-dir": "3rdparty/"

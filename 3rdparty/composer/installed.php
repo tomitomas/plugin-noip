@@ -3,7 +3,7 @@
         'name' => 'tomitomas/plugin-noip',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '631c949e72ed47cb6d8cd03ade1f105fe1807d5d',
+        'reference' => '7b1bcaebc3558d8d6c5ee5ab2b36a4767fadc96f',
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'tomitomas/jeedom-tools' => array(
-            'pretty_version' => '0.3',
-            'version' => '0.3.0.0',
-            'reference' => '8f7d4fe048313088f9105c3814f5148bb9fd0e8d',
+            'pretty_version' => '0.4',
+            'version' => '0.4.0.0',
+            'reference' => '8360eac5b73efecb4fde83154836a291377efe1d',
             'type' => 'library',
             'install_path' => __DIR__ . '/../tomitomas/jeedom-tools',
             'aliases' => array(),
@@ -22,7 +22,7 @@
         'tomitomas/plugin-noip' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '631c949e72ed47cb6d8cd03ade1f105fe1807d5d',
+            'reference' => '7b1bcaebc3558d8d6c5ee5ab2b36a4767fadc96f',
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
