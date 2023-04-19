@@ -328,7 +328,7 @@ class noip extends eqLogic {
                 $existingDomain->setConfiguration('parentId', $this->getId());
                 $existingDomain->save(true);
                 $allItems[] = $domain->hostname;
-                $allDomainsInfo[] = $domain->hostname . ' : ' . $domain->expirationdays . ' jours';
+                $allDomainsInfo[] = $domain->hostname . ' : ' . $domain->expirationdays . ' jour' . self::getPlurial($domain->expirationdays);
             }
         }
 
