@@ -196,6 +196,7 @@ class noip extends eqLogic {
         if ($this->getConfiguration('type', '') == 'account') {
             $this->setIsVisible(1);
             $this->setConfiguration('widgetTemplate', 1);
+            $this->setConfiguration('breakLine', 'n');
         } else {
             $this->setIsVisible(0);
         }
@@ -304,6 +305,9 @@ class noip extends eqLogic {
 
     public function recordData($obj) {
         $allItems = array();
+
+        $allDomainsInfo = array();
+
         foreach ($obj as $domain) {
             self::debug("will update domain with following data : " . json_encode($domain));
             $existingDomain = noip::byLogicalId($domain->hostname, 'noip');
@@ -324,9 +328,14 @@ class noip extends eqLogic {
                 $existingDomain->setConfiguration('parentId', $this->getId());
                 $existingDomain->save(true);
                 $allItems[] = $domain->hostname;
+                $allDomainsInfo[] = $domain->hostname . ' : ' . $domain->expirationdays . ' jours';
             }
         }
 
+        $breakLine = self::getBreakLine($this->getConfiguration('breakLine', 'n'));
+        $infoTxt = implode($breakLine, $allDomainsInfo);
+        // self::debug('all details => ' . $infoTxt);
+        $this->checkAndUpdateCmd('domainsDetails', $infoTxt);
         $this->removeUnexistingDomain($allItems);
     }
 
@@ -350,6 +359,23 @@ class noip extends eqLogic {
             $domain = noip::byLogicalId($eq, __CLASS__);
             /** @var noip $remove */
             if (is_object($domain)) $domain->remove();
+        }
+    }
+
+    public static function getBreakLine($br) {
+        switch ($br) {
+            case 'br':
+                return "<br/>";
+                break;
+
+            case ',':
+                return ", ";
+                break;
+
+            case 'n':
+            default:
+                return "\n";
+                break;
         }
     }
 

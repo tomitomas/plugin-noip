@@ -203,10 +203,21 @@ $myCurrentIp = noipTools::getCurrentIp();
                             </div>
                         </div>
 
-                        <div class="form-group onlyAccount" id="div_refreshNoIp">
+                        <div class="form-group onlyAccount" id="div_removeAutoNoIp">
                             <label class="col-sm-3 control-label help" data-help="{{Permet de supprimer automatiquement les domaines qui n'existent plus sur ce compte}}">{{Suppression auto}}</label>
                             <div class="col-sm-3">
                                 <input type="checkbox" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="autoRemove" />
+                            </div>
+                        </div>
+
+                        <div class="form-group onlyAccount">
+                            <label class="col-sm-3 control-label">{{Retour à la ligne}}</label>
+                            <div class="col-sm-3">
+                                <select class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="breakLine">
+                                    <option value="n">\n</option>
+                                    <option value="br">&lt;br/></option>
+                                    <option value=",">Virgule</option>
+                                </select>
                             </div>
                         </div>
 
