@@ -127,6 +127,38 @@ trait tomitomasEqLogicTrait {
     }
 
     /**
+     * From @Mips2648
+     * Allow to perform a // task exec : now or later
+     *
+     * @param string $_method
+     * @param array|null $_option
+     * @param string $_date
+     * @return void
+     */
+    public static function executeAsync(string $_method, $_option = null, $_date = 'now') {
+        if (!method_exists(__CLASS__, $_method)) {
+            throw new InvalidArgumentException("Method provided for executeAsync does not exist: {$_method}");
+        }
+
+        $cron = new cron();
+        $cron->setClass(__CLASS__);
+        $cron->setFunction($_method);
+        if (isset($_option)) {
+            $cron->setOption($_option);
+        }
+        $cron->setOnce(1);
+        $scheduleTime = strtotime($_date);
+        $cron->setSchedule(cron::convertDateToCron($scheduleTime));
+        $cron->save();
+        if ($scheduleTime <= strtotime('now')) {
+            $cron->run();
+            self::debug("Task '{$_method}' executed now");
+        } else {
+            self::debug("Task '{$_method}' scheduled at {$_date}");
+        }
+    }
+
+    /**
      ******************** LOGS FUNCTIONS
      */
 

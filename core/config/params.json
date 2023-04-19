@@ -83,6 +83,15 @@
                 "generic_type": "GENERIC_INFO",
                 "isVisible": 1,
                 "order": 3
+            },
+            {
+                "logicalId": "domainsDetails",
+                "name": "All domains details",
+                "type": "info",
+                "subtype": "string",
+                "generic_type": "GENERIC_INFO",
+                "isVisible": 0,
+                "order": 4
             }
         ]
     },
