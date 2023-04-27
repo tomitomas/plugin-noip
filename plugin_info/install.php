@@ -24,6 +24,10 @@ function noip_install() {
 		config::save('renewThreshold', 7, 'noip');
 	}
 
+	config::save('daemonLog', '200', 'noip');
+	config::save('hourStart', '3', 'noip');
+	config::save('hourEnd', '22', 'noip');
+
 	noip::createCheckCron();
 	noip::createIpUpdateCron();
 }

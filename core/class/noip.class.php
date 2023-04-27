@@ -196,6 +196,7 @@ class noip extends eqLogic {
         if ($this->getConfiguration('type', '') == 'account') {
             $this->setIsVisible(1);
             $this->setConfiguration('widgetTemplate', 1);
+            $this->setConfiguration('breakLine', 'n');
         } else {
             $this->setIsVisible(0);
         }
@@ -304,6 +305,9 @@ class noip extends eqLogic {
 
     public function recordData($obj) {
         $allItems = array();
+
+        $allDomainsInfo = array();
+
         foreach ($obj as $domain) {
             self::debug("will update domain with following data : " . json_encode($domain));
             $existingDomain = noip::byLogicalId($domain->hostname, 'noip');
@@ -324,9 +328,14 @@ class noip extends eqLogic {
                 $existingDomain->setConfiguration('parentId', $this->getId());
                 $existingDomain->save(true);
                 $allItems[] = $domain->hostname;
+                $allDomainsInfo[] = $domain->hostname . ' : ' . $domain->expirationdays . ' jour' . self::getPlurial($domain->expirationdays);
             }
         }
 
+        $breakLine = self::getBreakLine($this->getConfiguration('breakLine', 'n'));
+        $infoTxt = implode($breakLine, $allDomainsInfo);
+        // self::debug('all details => ' . $infoTxt);
+        $this->checkAndUpdateCmd('domainsDetails', $infoTxt);
         $this->removeUnexistingDomain($allItems);
     }
 
@@ -353,34 +362,20 @@ class noip extends eqLogic {
         }
     }
 
-    /**
-     * From @Mips2648
-     *
-     * @param string $_method
-     * @param array|null $_option
-     * @param string $_date
-     * @return void
-     */
-    public static function executeAsync(string $_method, $_option = null, $_date = 'now') {
-        if (!method_exists(__CLASS__, $_method)) {
-            throw new InvalidArgumentException("Method provided for executeAsync does not exist: {$_method}");
-        }
+    public static function getBreakLine($br) {
+        switch ($br) {
+            case 'br':
+                return "<br/>";
+                break;
 
-        $cron = new cron();
-        $cron->setClass(__CLASS__);
-        $cron->setFunction($_method);
-        if (isset($_option)) {
-            $cron->setOption($_option);
-        }
-        $cron->setOnce(1);
-        $scheduleTime = strtotime($_date);
-        $cron->setSchedule(cron::convertDateToCron($scheduleTime));
-        $cron->save();
-        if ($scheduleTime <= strtotime('now')) {
-            $cron->run();
-            log::add(__CLASS__, 'debug', "Task '{$_method}' executed now");
-        } else {
-            log::add(__CLASS__, 'debug', "Task '{$_method}' scheduled at {$_date}");
+            case ',':
+                return ", ";
+                break;
+
+            case 'n':
+            default:
+                return "\n";
+                break;
         }
     }
 
