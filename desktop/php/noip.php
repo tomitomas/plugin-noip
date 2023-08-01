@@ -25,7 +25,7 @@ $myCurrentIp = noipTools::getCurrentIp();
 <div class="row row-overflow">
     <div class="col-xs-12 eqLogicThumbnailDisplay">
         <div class="row">
-            <div class="col-sm-10" style="min-height:200px">
+            <div class="col-sm-9" style="min-height:200px">
                 <legend><i class="fas fa-cog"></i> {{Gestion}}</legend>
                 <div class="eqLogicThumbnailContainer">
                     <div class="cursor eqLogicAction logoPrimary" data-action="add" title="{{Ajouter un compte No-Ip}}">
@@ -45,13 +45,34 @@ $myCurrentIp = noipTools::getCurrentIp();
                     </div>
                 </div>
             </div>
-            <div class="col-sm-2" style="min-height:200px">
-                <legend><i class="fas fa-search"></i> {{Debug}}</legend>
-                <div class="eqLogicThumbnailContainer">
-                    <div class="cursor eqLogicAction logoSecondary" id="bt_getScreenshot">
-                        <i class="fas fa-bug" style="color:rgb(0,25,132);"></i>
-                        <br>
-                        <span style="color:var(--txt-color)">{{Screenshots}}</span>
+            <div class="col-sm-3" style="min-height:200px">
+                <div class="col-sm-6">
+                    <?php
+                    // uniquement si on est en version 4.4 ou supérieur
+                    $jeedomVersion  = jeedom::version() ?? '0';
+                    $displayInfoValue = version_compare($jeedomVersion, '4.4.0', '>=');
+                    if ($displayInfoValue) {
+                    ?>
+                        <legend><i class=" fas fa-comments"></i> {{Community}}</legend>
+                        <div class="eqLogicThumbnailContainer">
+                            <div class="cursor eqLogicAction logoSecondary" data-action="createCommunityPost" style="color:rgb(0,25,132);">
+                                <i class="fas fa-ambulance"></i>
+                                <br>
+                                <span style="color:var(--txt-color)">{{Créer un post Community}}</span>
+                            </div>
+                        </div>
+                    <?php
+                    }
+                    ?>
+                </div>
+                <div class="col-sm-6" style="min-height:200px">
+                    <legend><i class="fas fa-search"></i> {{Debug}}</legend>
+                    <div class="eqLogicThumbnailContainer">
+                        <div class="cursor eqLogicAction logoSecondary" id="bt_getScreenshot">
+                            <i class="fas fa-bug" style="color:rgb(0,25,132);"></i>
+                            <br>
+                            <span style="color:var(--txt-color)">{{Screenshots}}</span>
+                        </div>
                     </div>
                 </div>
             </div>
