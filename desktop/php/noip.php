@@ -28,17 +28,17 @@ $myCurrentIp = noipTools::getCurrentIp();
             <div class="col-sm-9" style="min-height:200px">
                 <legend><i class="fas fa-cog"></i> {{Gestion}}</legend>
                 <div class="eqLogicThumbnailContainer">
-                    <div class="cursor eqLogicAction logoPrimary" data-action="add" title="{{Ajouter un compte No-Ip}}">
-                        <i class="fas fa-plus-circle" style="color:rgb(0,25,132);"></i>
+                    <div class="cursor eqLogicAction logoPrimary" data-action="add" title="{{Ajouter un compte No-Ip}}" style="color:var(--main-color);">
+                        <i class="fas fa-plus-circle"></i>
                         <br>
                         <span style="color:var(--txt-color)">{{Ajouter}}</span>
                     </div>
-                    <div class="cursor eqLogicAction logoPrimary" data-action="discover" data-action2="repos" title="{{Scanner les domaines}}">
-                        <i class="fas fa-bullseye" style="color:rgb(0,25,132);"></i>
+                    <div class="cursor eqLogicAction logoPrimary" data-action="discover" data-action2="repos" title="{{Scanner les domaines}}" style="color:var(--main-color);">
+                        <i class="fas fa-bullseye"></i>
                         <br>
                         <span style="color:var(--txt-color)">{{Scanner}}</span>
                     </div>
-                    <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
+                    <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf" style="color:var(--main-color);">
                         <i class="fas fa-wrench"></i>
                         <br>
                         <span style="color:var(--txt-color)">{{Configuration}}</span>
@@ -55,7 +55,7 @@ $myCurrentIp = noipTools::getCurrentIp();
                     ?>
                         <legend><i class=" fas fa-comments"></i> {{Community}}</legend>
                         <div class="eqLogicThumbnailContainer">
-                            <div class="cursor eqLogicAction logoSecondary" data-action="createCommunityPost" style="color:rgb(0,25,132);">
+                            <div class="cursor eqLogicAction logoSecondary" data-action="createCommunityPost" style="color:var(--main-color);">
                                 <i class="fas fa-ambulance"></i>
                                 <br>
                                 <span style="color:var(--txt-color)">{{Créer un post Community}}</span>
@@ -69,7 +69,7 @@ $myCurrentIp = noipTools::getCurrentIp();
                     <legend><i class="fas fa-search"></i> {{Debug}}</legend>
                     <div class="eqLogicThumbnailContainer">
                         <div class="cursor eqLogicAction logoSecondary" id="bt_getScreenshot">
-                            <i class="fas fa-bug" style="color:rgb(0,25,132);"></i>
+                            <i class="fas fa-bug" style="color:var(--main-color);"></i>
                             <br>
                             <span style="color:var(--txt-color)">{{Screenshots}}</span>
                         </div>
@@ -278,4 +278,5 @@ $myCurrentIp = noipTools::getCurrentIp();
 
 
 <?php include_file('desktop', 'noip', 'js', 'noip'); ?>
+<?php include_file('desktop', 'noip', 'css', 'noip'); ?>
 <?php include_file('core', 'plugin.template', 'js'); ?>
