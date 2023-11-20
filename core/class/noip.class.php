@@ -233,7 +233,7 @@ class noip extends eqLogic {
         $daemonLogConfig = config::byKey('daemonLog', __CLASS__, '200');
         $daemonLog = ($daemonLogConfig == 'parent') ? log::getLogLevel(__CLASS__) : $daemonLogConfig;
 
-        $cmd = 'python3 ' . $noip_path . '/resources/noip-renew.py ';
+        $cmd = system::getCmdSudo() . 'python3 ' . $noip_path . '/resources/noip-renew.py ';
         $cmd .= ' --loglevel ' . log::convertLogLevel($daemonLog);
         $cmd .= ' --user ' . $login;
         $cmd .= ' --pwd "' . $password . '"';

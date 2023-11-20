@@ -5,7 +5,6 @@ touch /tmp/jeedom/noip/dependancy_noip
 echo 0 > ${PROGRESS_FILE}
 echo "Launch install of noip dependencies"
 echo ""
-export DEBIAN_FRONTEND=noninteractive
 echo "-- Current OS version :"
 sudo lsb_release -d
 echo ""
@@ -31,15 +30,17 @@ sudo apt-get install -y python3-dev python-requests python3-pip
 echo 68 > ${PROGRESS_FILE}
 echo ""
 echo "-- Installation of chromium"
-sudo apt-get install -y chromium-chromedriver || \
-sudo apt-get install -y chromium-driver || \
-sudo apt-get install -y chromedriver
+# sudo apt-get install -y chromium-chromedriver || \
+# sudo apt-get install -y chromium-driver || \
+# sudo apt-get install -y chromedriver
+sudo mv /usr/bin/chromedriver /usr/bin/chromedriver.bak
+
 OS=$(hostnamectl | grep -i "operating system")
 case $OS in
     *Arch?Linux*)
         ;;
     *)
-        sudo apt-get install -y chromium-browser
+        sudo apt-get install -y chromium
         ;;
 esac
 echo 71 > ${PROGRESS_FILE}
