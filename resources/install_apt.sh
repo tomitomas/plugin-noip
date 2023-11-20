@@ -33,7 +33,7 @@ echo "-- Installation of chromium"
 # sudo apt-get install -y chromium-chromedriver || \
 # sudo apt-get install -y chromium-driver || \
 # sudo apt-get install -y chromedriver
-sudo mv /usr/bin/chromedriver /usr/bin/chromedriver.bak
+# sudo mv /usr/bin/chromedriver /usr/bin/chromedriver.bak
 
 OS=$(hostnamectl | grep -i "operating system")
 case $OS in
