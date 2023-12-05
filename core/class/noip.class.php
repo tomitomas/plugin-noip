@@ -240,6 +240,7 @@ class noip extends eqLogic {
         $cmd .= ' --threshold ' . config::byKey('renewThreshold', 'noip', 7);
         $cmd .= ' --renew ' . $renew;
         $cmd .= ' --noip_path ' . $noip_path;
+        $cmd .= ' --force_path ' . config::byKey('forcepath', __CLASS__, false);
         self::info('Starting daemon with cmd >>' . str_replace($password, str_repeat('*', strlen($password)), $cmd) . '<<');
         exec($cmd . ' >> ' . log::getPathToLog(__CLASS__) . ' 2>&1');
 
