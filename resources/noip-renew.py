@@ -288,15 +288,23 @@ class Robot:
         expiration_days = int(regex_match.group(0))
         return expiration_days
 
-    @staticmethod
-    def get_host_link(host, iteration):
-        return host.find_element(By.XPATH, ".//a[@class='link-info cursor-pointer']")
+    def get_host_link(self, host, iteration):
+        host_link = host.find_element(By.XPATH, ".//a[@class='link-info cursor-pointer']")
+        if not host_link:
+            if self.debug > 1:
+                self.browser.save_screenshot(self.rootpath + "/data/debug_host_link.png")
+            raise Exception("No host link found")
+        return host_link
 
-    @staticmethod
-    def get_host_button(host, iteration):
-        return host.find_element(
+    def get_host_button(self, host, iteration):
+        host_button = host.find_element(
             By.XPATH, ".//following-sibling::td[4]/button[contains(@class, 'btn')]"
         )
+        if not host_button:
+            if self.debug > 1:
+                self.browser.save_screenshot(self.rootpath + "/data/debug_host_button.png")
+            raise Exception("No host button found")
+        return host_button
 
     def get_host(self, row):
         if self.debug > 1:
