@@ -26,6 +26,7 @@ import base64
 import json
 import logging
 import argparse
+from selenium.webdriver.chrome.service import Service
 
 
 class jeedom_utils:
@@ -59,18 +60,18 @@ class Robot:
     LOGIN_URL = "https://www.noip.com/login"
     HOST_URL = "https://my.noip.com/dynamic-dns"
 
-    def __init__(self, username, password, threshold, renew, rootpath, debug):
+    def __init__(self, username, password, threshold, renew, rootpath, debug, forcePath):
         self.debug = debug
         self.username = username
         self.password = password
         self.threshold = threshold
         self.renew = renew
         self.rootpath = rootpath
-        self.browser = self.init_browser()
+        self.browser = self.init_browser(forcePath)
         self.data = []
 
     @staticmethod
-    def init_browser():
+    def init_browser(forcePath):
         options = webdriver.ChromeOptions()
         # added for Raspbian Buster 4.0+ versions. Check https://www.raspberrypi.org/forums/viewtopic.php?t=258019 for reference.
         options.add_argument("disable-features=VizDisplayCompositor")
@@ -82,7 +83,10 @@ class Robot:
         )
         if "https_proxy" in os.environ:
             options.add_argument("proxy-server=" + os.environ["https_proxy"])
-        browser = webdriver.Chrome(options=options)
+        if forcePath:
+            browser = webdriver.Chrome(options=options, service = Service('/usr/bin/chromedriver'))
+        else:
+            browser = webdriver.Chrome(options=options)
         browser.set_page_load_timeout(90)  # Extended timeout for Raspberry Pi.
         return browser
 
@@ -284,15 +288,23 @@ class Robot:
         expiration_days = int(regex_match.group(0))
         return expiration_days
 
-    @staticmethod
-    def get_host_link(host, iteration):
-        return host.find_element(By.XPATH, ".//a[@class='link-info cursor-pointer']")
+    def get_host_link(self, host, iteration):
+        host_link = host.find_element(By.XPATH, ".//a[@class='link-info cursor-pointer']")
+        if not host_link:
+            if self.debug > 1:
+                self.browser.save_screenshot(self.rootpath + "/data/debug_host_link.png")
+            raise Exception("No host link found")
+        return host_link
 
-    @staticmethod
-    def get_host_button(host, iteration):
-        return host.find_element(
+    def get_host_button(self, host, iteration):
+        host_button = host.find_element(
             By.XPATH, ".//following-sibling::td[4]/button[contains(@class, 'btn')]"
         )
+        if not host_button:
+            if self.debug > 1:
+                self.browser.save_screenshot(self.rootpath + "/data/debug_host_button.png")
+            raise Exception("No host button found")
+        return host_button
 
     def get_host(self, row):
         if self.debug > 1:
@@ -369,6 +381,7 @@ def main(argv=None):
         )
         parser.add_argument("--renew", help="Renew enable", type=int)
         parser.add_argument("--noip_path", help="path to the plugin", type=str)
+        parser.add_argument("--force_path", help="force path to chromedriver", type=int)
         # parser.add_argument("--pid", help="Value to write", type=str)
         args = parser.parse_args()
 
@@ -378,6 +391,7 @@ def main(argv=None):
         _noip_renew = args.renew
         _noip_rootpath = args.noip_path
         _debug = args.loglevel
+        _noip_forcePath= args.force_path
 
         jeedom_utils.set_log_level(_debug)
 
@@ -385,6 +399,7 @@ def main(argv=None):
         logging.info("User : " + str(_noip_username))
         logging.info("Threshold : " + str(_noip_threshold))
         logging.info("Renew : " + str(_noip_renew))
+        logging.info("ForcePath : " + str(_noip_forcePath))
 
         return (
             Robot(
@@ -394,6 +409,7 @@ def main(argv=None):
                 _noip_renew,
                 _noip_rootpath,
                 2 if _debug == "debug" else 0,
+                (_noip_forcePath == 1)
             )
         ).run()
     except TimeoutException as ex:
