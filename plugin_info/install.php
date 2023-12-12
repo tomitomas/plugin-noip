@@ -27,6 +27,10 @@ function noip_install() {
 	config::save('daemonLog', '200', 'noip');
 	config::save('hourStart', '3', 'noip');
 	config::save('hourEnd', '22', 'noip');
+	
+	if (config::byKey('forcepath', 'noip') == '') {
+		config::save('forcepath', 0, 'noip');
+	}
 
 	noip::createCheckCron();
 	noip::createIpUpdateCron();
@@ -36,6 +40,10 @@ function noip_update() {
 	$threshold = config::byKey('renewThreshold', 'noip', null);
 	if (is_null($threshold)) {
 		config::save('renewThreshold', 7, 'noip');
+	}
+
+	if (config::byKey('forcepath', 'noip') == '') {
+		config::save('forcepath', 0, 'noip');
 	}
 
 	noip::createIpUpdateCron();

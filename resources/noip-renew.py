@@ -297,14 +297,15 @@ class Robot:
         return host_link
 
     def get_host_button(self, host, iteration):
-        host_button = host.find_element(
-            By.XPATH, ".//following-sibling::td[4]/button[contains(@class, 'btn')]"
-        )
-        if not host_button:
+        try:
+            host_button = host.find_element(
+                By.XPATH, ".//following-sibling::td/button[contains(@class, 'btn')]"
+            )
+            return host_button
+        except Exception as e:
             if self.debug > 1:
                 self.browser.save_screenshot(self.rootpath + "/data/debug_host_button.png")
             raise Exception("No host button found")
-        return host_button
 
     def get_host(self, row):
         if self.debug > 1:
