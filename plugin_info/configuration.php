@@ -124,6 +124,16 @@ if (!isConnect('admin')) {
 				<input type="checkbox" class="configKey" data-l1key="traceLog" />
 			</div>
 		</div>
+		<div class="form-group">
+			<label class="col-lg-4 control-label">{{Forcer le chemin vers ChromeDriver}}
+				<sup>
+					<i class="fas fa-question-circle floatright" title="A la demande du développer cochez cette case. Par défaut : décocher"></i>
+				</sup>
+			</label>
+			<div class="col-lg-3">
+				<input type="checkbox" class="configKey" data-l1key="forcepath" />
+			</div>
+		</div>
 
 	</fieldset>
 </form>

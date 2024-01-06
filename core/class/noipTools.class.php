@@ -21,7 +21,7 @@ require_once __DIR__ . '/noip.class.php';
 
 class noipTools {
 
-    public static $_ip_url =  'https://ipecho.net/plain';
+    public static $_ip_url =  'https://api.ipify.org';
     public static $_noip_update =  'http://dynupdate.no-ip.com/nic/update';
 
     public function makeCurlRequest(string $url, array $headers = array(), array $data = array(), array $credentials = array('', ''), string $type = 'GET') {
