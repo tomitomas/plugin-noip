@@ -26,7 +26,7 @@ fi
 echo 50 > ${PROGRESS_FILE}
 echo ""
 echo "-- Installation of pip for python3 and necessary libraries"
-sudo apt-get install -y python3-dev python-requests python3-pip
+sudo apt-get install -y python3-dev python3-requests python3-pip
 echo 68 > ${PROGRESS_FILE}
 echo ""
 echo "-- Installation of chromium"
